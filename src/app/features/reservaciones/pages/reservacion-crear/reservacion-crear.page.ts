@@ -70,6 +70,11 @@ import { ReservacionBase, Reservacion } from '../../models/reservacion.model';
     </div>
   `,
   styles: [`
+    :host {
+      display: block;
+      background-color: #121212;
+      min-height: calc(100vh - 150px);
+    }
     .step-circle {
       width: 40px;
       height: 40px;
