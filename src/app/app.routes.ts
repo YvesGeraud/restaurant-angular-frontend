@@ -56,6 +56,14 @@ export const routes: Routes = [
       {
         path: 'mesas',
         loadChildren: () => import('./features/mesas/mesas.routes').then(m => m.MESAS_ROUTES)
+      },
+      {
+        path: 'reservaciones',
+        loadComponent: () => import('./features/reservaciones/pages/reservacion-list/reservacion-list.page').then(m => m.ReservacionListPage)
+      },
+      {
+        path: 'ordenes',
+        loadChildren: () => import('./features/ordenes/ordenes.routes').then(m => m.ORDENES_ROUTES)
       }
     ]
   },

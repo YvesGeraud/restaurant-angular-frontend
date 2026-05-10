@@ -131,7 +131,7 @@ export class MesasStore {
         loading: false 
       }))),
       catchError(err => {
-        const msg = 'Error al sincronizar el menú';
+        const msg = 'Error al sincronizar las mesas';
         this.state.update(s => ({ ...s, error: msg, loading: false }));
         this.notifications.error(msg);
         return EMPTY;
@@ -248,22 +248,24 @@ export class MesasStore {
     const original = this.state().mesas;
     const item = original.find(p => p.id === id);
     
-    // Optimistic Update: Quitamos el elemento inmediatamente de la lista
+    if (!item) return;
+
+    // Actualización optimista: Desactivar la mesa (soft-delete)
     this.state.update(s => ({
       ...s,
-      mesas: s.mesas.filter(p => p.id !== id),
+      mesas: s.mesas.map(m => m.id === id ? { ...m, estado: false } : m),
     }));
 
     this.mesasService.deleteMesa(id).pipe(
       catchError(err => {
-        // Rollback: Si falla el API, restauramos la lista original
+        // Rollback
         this.state.update(s => ({ ...s, mesas: original }));
-        this.notifications.error('Error al intentar eliminar la mesa');
+        this.notifications.error('Error al intentar desactivar la mesa');
         throw err;
       }),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe(() => {
-      this.notifications.success(`"${item?.id}" eliminado`);
+      this.notifications.success(`Mesa "${item.id}" puesta fuera de servicio`);
     });
   }
 }

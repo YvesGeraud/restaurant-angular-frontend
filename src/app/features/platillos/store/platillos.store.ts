@@ -247,22 +247,24 @@ export class PlatillosStore {
     const original = this.state().platillos;
     const item = original.find(p => p.id === id);
     
-    // Optimistic Update: Quitamos el elemento inmediatamente de la lista
+    if (!item) return;
+
+    // Actualización optimista: Cambiamos el estado a inactivo (soft delete)
     this.state.update(s => ({
       ...s,
-      platillos: s.platillos.filter(p => p.id !== id),
+      platillos: s.platillos.map(p => p.id === id ? { ...p, estado: false } : p),
     }));
 
     this.platillosService.deletePlatillo(id).pipe(
       catchError(err => {
-        // Rollback: Si falla el API, restauramos la lista original
+        // Rollback: Restauramos la lista original
         this.state.update(s => ({ ...s, platillos: original }));
-        this.notifications.error('Error al intentar eliminar el platillo');
+        this.notifications.error('Error al intentar desactivar el platillo');
         throw err;
       }),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe(() => {
-      this.notifications.success(`"${item?.nombre}" eliminado`);
+      this.notifications.success(`"${item.nombre}" marcado como agotado`);
     });
   }
 }

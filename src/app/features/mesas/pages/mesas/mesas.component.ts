@@ -4,9 +4,7 @@ import { RouterLink } from '@angular/router';
 
 // Feature dependencies
 import { MesasStore } from '../../store/mesa.store';
-import { MesaCardComponent } from '../../components/mesa_card/mesa_card.component';
 import { MesaModalComponent } from '../../components/mesa_modal/mesa_modal.component';
-import { MesaSkeletonComponent } from '../../components/mesa_skeleton/mesa_skeleton.component';
 
 // Shared dependencies
 import { PaginatorComponent } from '@shared/components/paginator/paginator.component';
@@ -22,9 +20,7 @@ import { Mesa, MesaFormData } from '../../models/mesa.model';
   imports: [
     CommonModule,
     RouterLink,
-    MesaCardComponent,
     MesaModalComponent,
-    MesaSkeletonComponent,
     PaginatorComponent,
     HasPermissionDirective
   ],

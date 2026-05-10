@@ -52,35 +52,94 @@
     </div>
   </div>
 
-  <!-- Grid de Mesas -->
-  <div class="row g-4 mb-4">
-    <!-- Skeleton Loading -->
-    <ng-container *ngIf="store.loading()">
-      <div class="col-12 col-md-6 col-lg-4 col-xl-3" *ngFor="let i of [1,2,3,4,5,6,7,8]">
-        <app-mesa-skeleton></app-mesa-skeleton>
-      </div>
-    </ng-container>
+  <!-- Data Table -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="py-3 px-4 text-muted font-weight-semibold">Mesa</th>
+            <th scope="col" class="py-3 text-muted font-weight-semibold">Capacidad</th>
+            <th scope="col" class="py-3 text-muted font-weight-semibold">Estatus</th>
+            <th scope="col" class="py-3 text-muted font-weight-semibold">Disponibilidad</th>
+            <th scope="col" class="py-3 px-4 text-end text-muted font-weight-semibold">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loading State -->
+          <ng-container *ngIf="store.loading()">
+            <tr *ngFor="let i of [1,2,3,4,5]">
+              <td class="px-4 py-3"><div class="spinner-grow spinner-grow-sm text-secondary" role="status"></div></td>
+              <td><div class="bg-secondary opacity-25 rounded w-50" style="height: 1rem;"></div></td>
+              <td><div class="bg-secondary opacity-25 rounded w-75" style="height: 1.5rem;"></div></td>
+              <td><div class="bg-secondary opacity-25 rounded w-50" style="height: 1.5rem;"></div></td>
+              <td class="px-4 text-end"><div class="bg-secondary opacity-25 rounded w-50 ms-auto" style="height: 2rem;"></div></td>
+            </tr>
+          </ng-container>
 
-    <!-- Lista de Mesas -->
-    <ng-container *ngIf="!store.loading()">
-      <div class="col-12 col-md-6 col-lg-4 col-xl-3" *ngFor="let mesa of store.mesas()">
-        <app-mesa-card 
-          [mesa]="mesa"
-          (onEdit)="onEditarMesa($event)"
-          (onDelete)="onEliminarMesa($event)"
-          (onActivate)="onReactivarMesa($event)">
-        </app-mesa-card>
-      </div>
+          <!-- Lista Real -->
+          <ng-container *ngIf="!store.loading()">
+            <tr *ngFor="let mesa of store.mesas()" [class.table-secondary]="!mesa.estado">
+              <td class="px-4 py-3">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">
+                    {{ mesa.codigo || mesa.id }}
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark">Mesa {{ mesa.id }}</div>
+                    <small class="text-muted">{{ mesa.codigo || 'Sin código' }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="fw-medium text-dark"><i class="bi bi-people me-1"></i> {{ mesa.capacidad }} Personas</span>
+              </td>
+              <td>
+                <span class="badge rounded-pill px-3 py-2 border" 
+                      [ngClass]="{
+                        'bg-success-subtle text-success border-success-subtle': mesa.status === 'libre',
+                        'bg-danger-subtle text-danger border-danger-subtle': mesa.status === 'ocupada',
+                        'bg-warning-subtle text-warning border-warning-subtle': mesa.status === 'reservada'
+                      }">
+                  <i class="bi me-1" [ngClass]="{
+                    'bi-check-circle': mesa.status === 'libre',
+                    'bi-person-walking': mesa.status === 'ocupada',
+                    'bi-calendar-event': mesa.status === 'reservada'
+                  }"></i>
+                  {{ mesa.status | uppercase }}
+                </span>
+              </td>
+              <td>
+                <span class="badge rounded-pill px-3 py-2" [ngClass]="mesa.estado ? 'bg-light text-primary border' : 'bg-light text-muted border'">
+                  {{ mesa.estado ? 'Activa' : 'Fuera de Servicio' }}
+                </span>
+              </td>
+              <td class="px-4 text-end">
+                <div class="btn-group shadow-sm">
+                  <button class="btn btn-sm btn-light border" (click)="onEditarMesa(mesa)" title="Editar">
+                    <i class="bi bi-pencil text-primary"></i>
+                  </button>
+                  <button *ngIf="mesa.estado" class="btn btn-sm btn-light border" (click)="onEliminarMesa(mesa)" title="Dar de Baja">
+                    <i class="bi bi-slash-circle text-danger"></i>
+                  </button>
+                  <button *ngIf="!mesa.estado" class="btn btn-sm btn-light border" (click)="onReactivarMesa(mesa)" title="Reactivar">
+                    <i class="bi bi-arrow-counterclockwise text-success"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
 
-      <!-- Empty State -->
-      <div class="col-12 text-center py-5" *ngIf="store.mesas().length === 0">
-        <div class="mb-3">
-          <i class="bi bi-inboxes display-1 text-light"></i>
-        </div>
-        <h4 class="text-muted">No se encontraron mesas</h4>
-        <p class="text-muted">Intenta cambiar los filtros o agrega una nueva mesa.</p>
-      </div>
-    </ng-container>
+          <!-- Empty State Row -->
+          <tr *ngIf="!store.loading() && store.mesas().length === 0">
+            <td colspan="5" class="text-center py-5 text-muted">
+              <i class="bi bi-inboxes display-4 d-block mb-3 opacity-50"></i>
+              <p class="mb-0">No se encontraron mesas que coincidan con los criterios.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Paginador -->

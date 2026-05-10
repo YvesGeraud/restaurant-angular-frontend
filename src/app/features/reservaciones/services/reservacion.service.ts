@@ -24,4 +24,18 @@ export class ReservacionService {
   iniciarPago(idReservacion: number, payload: IniciarPagoPayload): Observable<IniciarPagoResponse> {
     return this.http.post<IniciarPagoResponse>(`${this.apiUrl}/${idReservacion}/pago`, payload);
   }
+
+  /**
+   * Obtiene la lista completa de reservaciones (para el Staff)
+   */
+  obtenerTodas(): Observable<{ exito: boolean; datos: Reservacion[] }> {
+    return this.http.get<{ exito: boolean; datos: Reservacion[] }>(this.apiUrl);
+  }
+
+  /**
+   * Cancela una reservación (elimina lógicamente en el backend)
+   */
+  eliminar(id: number): Observable<{ exito: boolean }> {
+    return this.http.delete<{ exito: boolean }>(`${this.apiUrl}/${id}`);
+  }
 }

@@ -1,44 +1,78 @@
 <app-modal [isOpen]="isOpen()" [title]="platillo() ? 'Editar Platillo' : 'Nuevo Platillo'" (closeModal)="onClose()">
-  <form [formGroup]="form" (ngSubmit)="onSave()">
-    <div class="row g-3">
+  <form [formGroup]="form" (ngSubmit)="onSave()" class="py-2">
+    <div class="row g-4">
+      
+      <!-- Image Preview Column -->
+      <div class="col-md-4 text-center">
+        <label class="form-label fw-semibold text-muted mb-3 d-block text-start">Vista Previa</label>
+        <div class="border rounded-4 overflow-hidden mb-3 position-relative bg-light shadow-sm d-flex align-items-center justify-content-center" style="height: 160px;">
+          <img *ngIf="form.get('imagenUrl')?.value" [src]="form.get('imagenUrl')?.value" 
+               class="w-100 h-100 object-fit-cover" alt="Preview" 
+               (error)="form.get('imagenUrl')?.setErrors({'invalidUrl': true})">
+          <div *ngIf="!form.get('imagenUrl')?.value" class="text-muted text-center p-3">
+            <i class="bi bi-image display-4 d-block mb-2 opacity-50"></i>
+            <small>Sin imagen</small>
+          </div>
+        </div>
+        <div class="form-check form-switch d-flex justify-content-center align-items-center gap-2 mt-4" *ngIf="platillo()">
+          <input class="form-check-input m-0" type="checkbox" role="switch" formControlName="estado" id="estadoSwitch" style="transform: scale(1.2);">
+          <label class="form-check-label mb-0 fw-medium" for="estadoSwitch" [class.text-success]="form.get('estado')?.value">
+            {{ form.get('estado')?.value ? 'Disponible' : 'Agotado' }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Form Inputs Column -->
       <div class="col-md-8">
-        <label class="form-label">Nombre del Platillo</label>
-        <input type="text" class="form-control" formControlName="nombre" placeholder="Ej. Tacos al Pastor">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Categoría</label>
-        <select class="form-select" formControlName="idCategoria">
-          <option [ngValue]="null" disabled>Seleccionar...</option>
-          <option *ngFor="let cat of categoriaStore.categoriasActivas()" [value]="cat.id">
-            {{ cat.nombre }}
-          </option>
-        </select>
-      </div>
-      <div class="col-12">
-        <label class="form-label">Descripción</label>
-        <textarea class="form-control" formControlName="descripcion" rows="2" placeholder="Ingredientes, preparación..."></textarea>
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Precio</label>
-        <div class="input-group">
-          <span class="input-group-text">$</span>
-          <input type="number" step="0.01" class="form-control" formControlName="precio">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label fw-semibold text-muted">Nombre del Platillo</label>
+            <input type="text" class="form-control form-control-lg bg-light border-0" formControlName="nombre" placeholder="Ej. Filet Mignon"
+                   [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+            <div class="invalid-feedback">El nombre es requerido (mínimo 3 caracteres).</div>
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Categoría</label>
+            <select class="form-select bg-light border-0" formControlName="idCategoria"
+                    [class.is-invalid]="form.get('idCategoria')?.invalid && form.get('idCategoria')?.touched">
+              <option [ngValue]="null" disabled>Seleccionar...</option>
+              <option *ngFor="let cat of categoriaStore.categoriasActivas()" [value]="cat.id">
+                {{ cat.nombre }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Precio</label>
+            <div class="input-group">
+              <span class="input-group-text border-0 bg-light fw-bold text-muted">$</span>
+              <input type="number" step="0.01" class="form-control bg-light border-0" formControlName="precio"
+                     [class.is-invalid]="form.get('precio')?.invalid && form.get('precio')?.touched">
+            </div>
+          </div>
+          
+          <div class="col-12">
+            <label class="form-label fw-semibold text-muted">URL de Imagen</label>
+            <input type="url" class="form-control bg-light border-0" formControlName="imagenUrl" placeholder="https://ejemplo.com/imagen.jpg">
+            <small class="text-muted mt-1 d-block">Pega una URL válida para cargar la imagen en la vista previa.</small>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-muted">Descripción (Opcional)</label>
+            <textarea class="form-control bg-light border-0" formControlName="descripcion" rows="3" placeholder="Ingredientes y modo de preparación..."></textarea>
+          </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <label class="form-label">URL de Imagen (Opcional)</label>
-        <input type="url" class="form-control" formControlName="imagenUrl" placeholder="https://...">
-      </div>
-      <div class="col-12" *ngIf="platillo()">
-        <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" formControlName="estado" id="estadoSwitch">
-          <label class="form-check-label" for="estadoSwitch">Disponible en menú</label>
-        </div>
-      </div>
+
     </div>
-    <div class="d-flex justify-content-end gap-2 mt-4">
-      <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
-      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Guardar Platillo</button>
+    
+    <!-- Footer Actions -->
+    <div class="d-flex justify-content-end gap-3 mt-5 pt-3 border-top">
+      <button type="button" class="btn btn-light px-4 fw-medium" (click)="onClose()">Cancelar</button>
+      <button type="submit" class="btn btn-primary px-4 fw-bold" [disabled]="form.invalid">
+        <i class="bi bi-check2-circle me-2"></i>Guardar Platillo
+      </button>
     </div>
   </form>
 </app-modal>

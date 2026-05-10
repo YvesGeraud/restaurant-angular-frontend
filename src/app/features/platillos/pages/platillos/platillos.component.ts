@@ -4,9 +4,7 @@ import { RouterLink } from '@angular/router';
 
 // Feature dependencies
 import { PlatillosStore } from '../../store/platillos.store';
-import { PlatilloCardComponent } from '../../components/platillo_card/platillo_card.component';
 import { PlatilloModalComponent } from '../../components/platillo_modal/platillo_modal.component';
-import { PlatilloSkeletonComponent } from '../../components/platillo_skeleton/platillo_skeleton.component';
 
 // Shared dependencies (Global Alias)
 import { PaginatorComponent } from '@shared/components/paginator/paginator.component';
@@ -22,9 +20,7 @@ import { NotificationService } from '@core/services/notification.service';
   imports: [
     CommonModule,
     RouterLink,
-    PlatilloCardComponent,
     PlatilloModalComponent,
-    PlatilloSkeletonComponent,
     PaginatorComponent,
     HasPermissionDirective
   ],

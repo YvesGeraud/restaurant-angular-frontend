@@ -29,34 +29,86 @@
     <button class="btn btn-sm btn-outline-danger ms-3" (click)="store.loadPlatillos()">Reintentar</button>
   </div>
 
-  <!-- Grid de Platillos -->
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 mb-4">
-    
-    <!-- Skeleton Loaders -->
-    <ng-container *ngIf="store.loading()">
-      <div class="col" *ngFor="let i of [1,2,3,4,5,6,7,8]">
-        <app-platillo-skeleton></app-platillo-skeleton>
-      </div>
-    </ng-container>
+  <!-- Data Table -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="py-3 px-4 text-muted font-weight-semibold" style="width: 80px;">Img</th>
+            <th scope="col" class="py-3 text-muted font-weight-semibold">Platillo</th>
+            <th scope="col" class="py-3 text-muted font-weight-semibold">Categoría</th>
+            <th scope="col" class="py-3 text-muted font-weight-semibold">Precio</th>
+            <th scope="col" class="py-3 text-muted font-weight-semibold">Estado</th>
+            <th scope="col" class="py-3 px-4 text-end text-muted font-weight-semibold">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Skeleton Loaders -->
+          <ng-container *ngIf="store.loading()">
+            <tr *ngFor="let i of [1,2,3,4,5]">
+              <td class="px-4 py-3"><div class="spinner-grow spinner-grow-sm text-secondary" role="status"></div></td>
+              <td><div class="bg-secondary opacity-25 rounded w-50" style="height: 1rem;"></div></td>
+              <td><div class="bg-secondary opacity-25 rounded w-75" style="height: 1rem;"></div></td>
+              <td><div class="bg-secondary opacity-25 rounded w-25" style="height: 1rem;"></div></td>
+              <td><div class="bg-secondary opacity-25 rounded w-50" style="height: 1rem;"></div></td>
+              <td class="px-4 text-end"><div class="bg-secondary opacity-25 rounded w-50 ms-auto" style="height: 1rem;"></div></td>
+            </tr>
+          </ng-container>
 
-    <!-- Lista Real -->
-    <ng-container *ngIf="!store.loading()">
-      <div class="col" *ngFor="let p of store.platillos()">
-        <app-platillo-card 
-          [platillo]="p"
-          (onEdit)="onEditarPlatillo($event)"
-          (onDelete)="onEliminarPlatillo($event)"
-          (onActivate)="onReactivarPlatillo($event)">
-        </app-platillo-card>
-      </div>
-    </ng-container>
+          <!-- Lista Real -->
+          <ng-container *ngIf="!store.loading()">
+            <tr *ngFor="let p of store.platillos()" [class.table-secondary]="!p.estado">
+              <td class="px-4 py-3">
+                <div class="rounded-3 overflow-hidden shadow-sm" style="width: 48px; height: 48px; background-color: #f8f9fa;">
+                  <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" class="w-100 h-100 object-fit-cover" [alt]="p.nombre">
+                  <div *ngIf="!p.imagenUrl" class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
+                    <i class="bi bi-image opacity-50"></i>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fw-bold text-dark">{{ p.nombre }}</div>
+                <div class="small text-muted text-truncate" style="max-width: 250px;">{{ p.descripcion }}</div>
+              </td>
+              <td>
+                <span class="badge bg-light text-primary border px-2 py-1">{{ p.categoria.nombre }}</span>
+              </td>
+              <td class="fw-medium text-dark">
+                {{ p.precio | currency:'USD' }}
+              </td>
+              <td>
+                <span class="badge rounded-pill px-3 py-2" [ngClass]="p.estado ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+                  <i class="bi me-1" [ngClass]="p.estado ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                  {{ p.estado ? 'Disponible' : 'Agotado' }}
+                </span>
+              </td>
+              <td class="px-4 text-end">
+                <div class="btn-group shadow-sm">
+                  <button class="btn btn-sm btn-light border" (click)="onEditarPlatillo(p)" title="Editar">
+                    <i class="bi bi-pencil text-primary"></i>
+                  </button>
+                  <button *ngIf="p.estado" class="btn btn-sm btn-light border" (click)="onEliminarPlatillo(p)" title="Marcar Agotado">
+                    <i class="bi bi-trash text-danger"></i>
+                  </button>
+                  <button *ngIf="!p.estado" class="btn btn-sm btn-light border" (click)="onReactivarPlatillo(p)" title="Marcar Disponible">
+                    <i class="bi bi-arrow-counterclockwise text-success"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
 
-  </div>
-
-  <!-- Empty State -->
-  <div *ngIf="!store.loading() && store.platillos().length === 0 && !store.error()" class="text-center py-5 text-muted">
-    <i class="bi bi-inbox display-1"></i>
-    <p class="lead mt-3">No se encontraron platillos.</p>
+          <!-- Empty State Row -->
+          <tr *ngIf="!store.loading() && store.platillos().length === 0 && !store.error()">
+            <td colspan="6" class="text-center py-5 text-muted">
+              <i class="bi bi-inbox display-4 d-block mb-3 opacity-50"></i>
+              <p class="mb-0">No se encontraron platillos en el catálogo.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Paginador -->
