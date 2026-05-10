@@ -1,0 +1,50 @@
+<div class="app-layout min-vh-100 d-flex flex-column bg-light">
+  <!-- Public Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top py-3" style="background-color: #121212; border-bottom: 1px solid rgba(212, 175, 55, 0.2);">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-4 d-flex align-items-center" routerLink="/" style="color: #d4af37; font-family: 'Playfair Display', serif; letter-spacing: 2px;">
+        <i class="bi bi-star-fill me-2 fs-5"></i>
+        El Gran Sabor
+      </a>
+      
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#publicNavbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="publicNavbarContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-3">
+          <li class="nav-item">
+            <a class="nav-link fw-medium px-3 text-white-50 hover-text-gold" routerLink="/" routerLinkActive="text-gold active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium px-3 text-white-50 hover-text-gold" routerLink="/menu" routerLinkActive="text-gold active">Menú</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium px-3 text-white-50 hover-text-gold" routerLink="/reservaciones/crear" routerLinkActive="text-gold active">Reservar</a>
+          </li>
+          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+            <a class="btn btn-outline-light fw-medium px-4 rounded-pill" routerLink="/login">
+              <i class="bi bi-person-circle me-2"></i>Staff
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content flex-grow-1">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Simple Footer -->
+  <footer class="py-5 mt-auto" style="background-color: #0a0a0a; border-top: 1px solid rgba(212, 175, 55, 0.2);">
+    <div class="container text-center text-white-50 small">
+      <div class="mb-3">
+        <a href="#" class="text-white-50 me-3 text-decoration-none"><i class="bi bi-instagram fs-5"></i></a>
+        <a href="#" class="text-white-50 me-3 text-decoration-none"><i class="bi bi-facebook fs-5"></i></a>
+      </div>
+      <p class="mb-0" style="font-family: 'Playfair Display', serif;">&copy; 2026 El Gran Sabor. Una experiencia inolvidable.</p>
+    </div>
+  </footer>
+</div>

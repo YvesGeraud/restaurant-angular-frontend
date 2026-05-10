@@ -1,0 +1,36 @@
+.pagination {
+  gap: 0.5rem;
+  
+  .page-item {
+    .page-link {
+      border: none;
+      border-radius: 0.5rem;
+      color: var(--app-text-muted);
+      font-weight: 600;
+      padding: 0.6rem 0.9rem;
+      transition: all 0.2s ease;
+      background: var(--app-surface);
+      border: 1px solid var(--app-border-color);
+
+      &:hover {
+        background-color: var(--app-surface-soft);
+        color: var(--brand-secondary);
+        border-color: var(--brand-secondary-soft);
+      }
+    }
+
+    &.active .page-link {
+      background-color: var(--brand-secondary);
+      color: white;
+      border-color: var(--brand-secondary);
+      box-shadow: 0 4px 12px var(--brand-secondary-soft);
+    }
+
+    &.disabled .page-link {
+      background-color: var(--app-bg);
+      color: var(--app-text-light);
+      border-color: var(--app-border-color);
+      opacity: 0.6;
+    }
+  }
+}

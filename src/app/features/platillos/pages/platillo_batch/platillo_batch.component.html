@@ -1,0 +1,21 @@
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4">
+    <a routerLink="/platillos" class="btn btn-outline-secondary me-3">
+      <i class="bi bi-arrow-left"></i> Volver
+    </a>
+    <h2 class="mb-0 fw-bold">Carga Masiva de Platillos</h2>
+  </div>
+
+  <app-card [hoverable]="false">
+    <div class="p-4 text-center">
+      <i class="bi bi-file-earmark-spreadsheet display-1 text-muted mb-3"></i>
+      <h3>Subir Archivo Excel o CSV</h3>
+      <p class="text-muted">Descarga la plantilla, llénala con los datos de tus platillos y súbela aquí.</p>
+      
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <button class="btn btn-outline-primary">Descargar Plantilla</button>
+        <button class="btn btn-primary" (click)="onProcesar()">Seleccionar Archivo</button>
+      </div>
+    </div>
+  </app-card>
+</div>

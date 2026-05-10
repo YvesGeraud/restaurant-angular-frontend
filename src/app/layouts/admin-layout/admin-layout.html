@@ -1,0 +1,32 @@
+<div class="app-layout min-vh-100 d-flex flex-column bg-light">
+  <!-- Top Navbar -->
+  <app-navbar></app-navbar>
+
+  <div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <aside class="sidebar bg-white border-end shadow-sm d-none d-md-flex flex-column" style="width: 250px; min-height: calc(100vh - 76px);">
+      <div class="p-3">
+        <span class="text-uppercase text-muted fw-bold small tracking-wider mb-2 d-block px-3">Gestión</span>
+        <ul class="nav nav-pills flex-column gap-1">
+          <li class="nav-item">
+            <a class="nav-link text-dark py-2 px-3 d-flex align-items-center" routerLink="/admin/platillos" routerLinkActive="active bg-primary text-white">
+              <i class="bi bi-egg-fried me-3 fs-5"></i>
+              <span>Platillos</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark py-2 px-3 d-flex align-items-center" routerLink="/admin/mesas" routerLinkActive="active bg-primary text-white">
+              <i class="bi bi-grid-3x3-gap me-3 fs-5"></i>
+              <span>Mesas</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content flex-grow-1 p-4 overflow-auto" style="height: calc(100vh - 76px);">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

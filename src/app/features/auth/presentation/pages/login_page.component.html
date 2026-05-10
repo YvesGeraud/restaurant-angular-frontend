@@ -1,0 +1,115 @@
+<div class="login-page d-flex align-items-center justify-content-center min-vh-100 p-3">
+  
+  <div class="login-card shadow-2xl border-0 overflow-hidden bg-white rounded-4 animate-in">
+    <div class="row g-0">
+      
+      <!-- Columna Izquierda: Visual/Logo (Opcional, en móviles se oculta) -->
+      <div class="col-lg-6 d-none d-lg-block bg-primary p-5 position-relative">
+        <div class="h-100 d-flex flex-column justify-content-between text-white">
+          <div>
+            <h2 class="fw-bold mb-3 fs-1">Restaurante App</h2>
+            <p class="fs-5 opacity-75">Sistema Integral de Gestión y Control del Menú.</p>
+          </div>
+          
+          <div class="mb-4">
+            <div class="p-3 bg-white bg-opacity-10 rounded-pill d-inline-block mb-3">
+              <i class="bi bi-shield-lock-fill fs-3"></i>
+            </div>
+            <h4 class="fw-semibold">Seguridad a nivel bancario</h4>
+            <p class="small opacity-75">Tus datos están protegidos con encriptación de extremo a extremo.</p>
+          </div>
+        </div>
+        <!-- Decoración abstracta -->
+        <div class="decoration-circle top-0 end-0 translate-middle"></div>
+        <div class="decoration-circle bottom-0 start-0 translate-middle"></div>
+      </div>
+
+      <!-- Columna Derecha: Formulario -->
+      <div class="col-lg-6">
+        <div class="p-4 p-md-5 h-100 d-flex flex-column justify-content-center">
+          
+          <div class="mb-5">
+            <h1 class="h2 fw-bold text-slate-900 mb-2">¡Bienvenido de nuevo!</h1>
+            <p class="text-slate-500">Ingresa tus credenciales para acceder al sistema.</p>
+          </div>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="g-3 row">
+            
+            <div class="col-12 mb-3">
+              <label class="form-label fw-semibold text-slate-700">Usuario</label>
+              @let usuarioControl = loginForm.get('usuario');
+              <div class="input-group input-group-lg border rounded-3 overflow-hidden bg-slate-50 transition-all border-slate-200"
+                   [class.border-primary]="usuarioControl?.touched && usuarioControl?.valid"
+                   [class.border-danger]="usuarioControl?.touched && usuarioControl?.invalid">
+                <span class="input-group-text bg-transparent border-0 pe-0 text-slate-400">
+                  <i class="bi bi-person"></i>
+                </span>
+                <input 
+                  type="text" 
+                  class="form-control bg-transparent border-0 shadow-none py-3" 
+                  placeholder="Ej: admindms"
+                  formControlName="usuario">
+              </div>
+              @if (usuarioControl?.touched && usuarioControl?.invalid) {
+                <div class="text-danger small mt-1">
+                  El usuario es requerido (min. 3 caracteres).
+                </div>
+              }
+            </div>
+
+            <div class="col-12 mb-4">
+              <div class="d-flex justify-content-between">
+                <label class="form-label fw-semibold text-slate-700">Contraseña</label>
+              </div>
+              @let passControl = loginForm.get('contrasena');
+              <div class="input-group input-group-lg border rounded-3 overflow-hidden bg-slate-50 transition-all border-slate-200"
+                   [class.border-primary]="passControl?.touched && passControl?.valid"
+                   [class.border-danger]="passControl?.touched && passControl?.invalid">
+                <span class="input-group-text bg-transparent border-0 pe-0 text-slate-400">
+                  <i class="bi bi-lock"></i>
+                </span>
+                <input 
+                  [type]="showPassword() ? 'text' : 'password'" 
+                  class="form-control bg-transparent border-0 shadow-none py-3" 
+                  placeholder="••••••••"
+                  formControlName="contrasena">
+                <span class="input-group-text bg-transparent border-0 pe-3 text-slate-400 cursor-pointer"
+                      (click)="showPassword.set(!showPassword())">
+                  <i [class]="showPassword() ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                </span>
+              </div>
+              @if (passControl?.touched && passControl?.invalid) {
+                <div class="text-danger small mt-1">
+                  La contraseña es requerida (min. 6 caracteres).
+                </div>
+              }
+              <a href="#" class="text-primary text-decoration-none small fw-medium">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <div class="col-12">
+              <button 
+                type="submit" 
+                class="btn btn-primary d-block w-100 py-3 rounded-3 fw-bold shadow-lg transition-all"
+                [disabled]="authStore.loading() || loginForm.invalid">
+                @if (authStore.loading()) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Validando...
+                } @else {
+                  Acceder al Sistema
+                }
+              </button>
+            </div>
+
+          </form>
+
+          <div class="mt-5 pt-3 text-center border-top border-slate-100">
+            <p class="text-slate-500 small mb-0"> &copy; 2026 Restaurante Node. Todos los derechos reservados.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

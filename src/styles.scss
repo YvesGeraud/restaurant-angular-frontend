@@ -1,1 +1,159 @@
-/* You can add global styles to this file, and also import other style files */
+/* Configuración global de diseño premium */
+
+// 1. Configuración de Bootstrap con @use (SIEMPRE debe ir primero)
+@use "bootstrap/scss/bootstrap" with (
+  $primary: #10b981,
+  $secondary: #6366f1,
+  $font-family-sans-serif: ('Inter', system-ui, -apple-system, sans-serif)
+);
+
+// 2. Fuentes (Google Fonts)
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+// 3. Iconos
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+// 4. Catálogo de Diseño Semántico (Design Tokens)
+// Aquí centralizamos TODO el look & feel para máxima consistencia.
+:root {
+  // Paleta de Colores Base
+  --brand-primary: #10b981;
+  --brand-primary-dark: #059669;
+  --brand-secondary: #6366f1;
+  --brand-secondary-soft: rgba(99, 102, 241, 0.1);
+  --brand-danger: #f43f5e;
+  
+  // Colores de Superficie (Fondos)
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-surface-soft: #f1f5f9;
+  
+  // Tipografía y Texto
+  --app-text-main: #0f172a;
+  --app-text-muted: #64748b;
+  --app-text-light: #94a3b8;
+  
+  // Bordes y Sombras
+  --app-border-color: #e2e8f0;
+  --app-border-focus: var(--brand-secondary);
+  --app-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --app-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --app-shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  // Componentes Específicos (El "Catálogo" que pediste)
+  --app-card-radius: 1.25rem;
+  --app-card-bg: var(--app-surface);
+  --app-card-shadow: var(--app-shadow-md);
+  
+  --app-modal-radius: 1.5rem;
+  --app-modal-overlay: rgba(15, 23, 42, 0.6);
+  --app-modal-backdrop-blur: 8px;
+  
+  --app-input-radius: 0.75rem;
+  --app-input-bg: #f9fafb;
+  
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+// 5. Estilos Base y Normalización
+body {
+  background-color: var(--app-bg);
+  color: var(--app-text-main);
+  font-family: var(--font-inter);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+// 6. Utilidades Premium Globales (Optimizadas con Tokens)
+.btn {
+  border-radius: 9999px;
+  padding: 0.6rem 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &-primary {
+    background-color: var(--brand-secondary);
+    border-color: var(--brand-secondary);
+    box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.3);
+    &:hover {
+      background-color: #4f46e5;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+  }
+
+  &-light-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--app-border-color);
+    color: var(--app-text-muted);
+    &:hover {
+      background: var(--app-surface-soft);
+      border-color: var(--brand-secondary);
+      color: var(--brand-secondary);
+    }
+  }
+}
+
+// Inputs Premium Reutilizables
+.custom-input {
+  background-color: var(--app-input-bg);
+  border: 2px solid transparent;
+  border-radius: var(--app-input-radius);
+  padding: 0.75rem 1.15rem;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  color: var(--app-text-main);
+
+  &:focus {
+    background-color: var(--app-surface);
+    border-color: var(--app-border-focus);
+    box-shadow: 0 0 0 5px var(--brand-secondary-soft) !important;
+  }
+
+  &.is-invalid {
+    border-color: var(--brand-danger);
+    background-color: rgba(244, 63, 94, 0.05);
+    &:focus {
+      box-shadow: 0 0 0 5px rgba(244, 63, 94, 0.1) !important;
+    }
+  }
+
+  &::placeholder {
+    color: var(--app-text-light);
+  }
+}
+
+.form-label {
+  color: var(--app-text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+// Custom Switch Premium
+.custom-switch {
+  .form-check-input {
+    width: 3.2rem;
+    height: 1.6rem;
+    cursor: pointer;
+    background-color: var(--app-surface-soft);
+    border-color: var(--app-border-color);
+    transition: all 0.3s ease;
+
+    &:checked {
+      background-color: var(--brand-primary);
+      border-color: var(--brand-primary);
+    }
+    
+    &:focus {
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    }
+  }
+}
+
+// Contenedores Universales
+.container {
+  max-width: 1280px;
+}

@@ -1,0 +1,52 @@
+<app-card [hoverable]="true" padding="1.25rem">
+  <div class="d-flex flex-column h-100">
+    <!-- Header: Mesa Icon and Status -->
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="mesa-icon-wrapper p-3 rounded-circle shadow-sm" [ngClass]="mesa().status | statusBadge">
+        <i class="bi bi-table h3 mb-0"></i>
+      </div>
+      <div class="d-flex flex-column align-items-end gap-1">
+        <span class="badge rounded-pill shadow-sm text-capitalize" [ngClass]="mesa().status | statusBadge">
+          {{ mesa().status }}
+        </span>
+        <span *ngIf="!mesa().estado" class="badge bg-secondary-subtle text-secondary border border-secondary small">
+          Inactiva
+        </span>
+      </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="mb-3">
+      <h4 class="fw-bold mb-1">{{ mesa().codigo }}</h4>
+      <div class="d-flex align-items-center text-muted small">
+        <i class="bi bi-people-fill me-2"></i>
+        <span>Capacidad: {{ mesa().capacidad }} personas</span>
+      </div>
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+      <button class="btn btn-light btn-sm text-primary d-flex align-items-center gap-1 border-0" 
+              (click)="onEdit.emit(mesa())"
+              title="Editar mesa">
+        <i class="bi bi-pencil-square"></i>
+        <span>Editar</span>
+      </button>
+      
+      <button *ngIf="mesa().estado"
+              class="btn btn-light btn-sm text-danger d-flex align-items-center gap-1 border-0" 
+              (click)="onDelete.emit(mesa())"
+              title="Eliminar mesa">
+        <i class="bi bi-trash"></i>
+      </button>
+
+      <button *ngIf="!mesa().estado"
+              class="btn btn-light btn-sm text-success d-flex align-items-center gap-1 border-0" 
+              (click)="onActivate.emit(mesa())"
+              title="Reactivar mesa">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Reactivar</span>
+      </button>
+    </div>
+  </div>
+</app-card>

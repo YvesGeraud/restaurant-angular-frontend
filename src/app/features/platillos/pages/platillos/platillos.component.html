@@ -1,0 +1,77 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 fw-bold">Menú y Platillos</h2>
+    <div class="d-flex gap-2">
+      <a routerLink="/platillos/batch" *appHasPermission="'PLATILLOS_CREAR'" class="btn btn-outline-secondary">
+        <i class="bi bi-file-earmark-spreadsheet me-2"></i>Carga Masiva
+      </a>
+      <button *appHasPermission="'PLATILLOS_CREAR'" class="btn btn-primary" (click)="onNuevoPlatillo()">
+        <i class="bi bi-plus-lg me-2"></i>Nuevo Platillo
+      </button>
+    </div>
+  </div>
+
+  <!-- Barra de búsqueda -->
+  <div class="row mb-4">
+    <div class="col-md-6 col-lg-4">
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control border-start-0" placeholder="Buscar platillos..." 
+               [value]="store.filtros().busqueda"
+               (input)="onSearch($any($event.target).value)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado de Error -->
+  <div *ngIf="store.error()" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i> {{ store.error() }}
+    <button class="btn btn-sm btn-outline-danger ms-3" (click)="store.loadPlatillos()">Reintentar</button>
+  </div>
+
+  <!-- Grid de Platillos -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 mb-4">
+    
+    <!-- Skeleton Loaders -->
+    <ng-container *ngIf="store.loading()">
+      <div class="col" *ngFor="let i of [1,2,3,4,5,6,7,8]">
+        <app-platillo-skeleton></app-platillo-skeleton>
+      </div>
+    </ng-container>
+
+    <!-- Lista Real -->
+    <ng-container *ngIf="!store.loading()">
+      <div class="col" *ngFor="let p of store.platillos()">
+        <app-platillo-card 
+          [platillo]="p"
+          (onEdit)="onEditarPlatillo($event)"
+          (onDelete)="onEliminarPlatillo($event)"
+          (onActivate)="onReactivarPlatillo($event)">
+        </app-platillo-card>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!store.loading() && store.platillos().length === 0 && !store.error()" class="text-center py-5 text-muted">
+    <i class="bi bi-inbox display-1"></i>
+    <p class="lead mt-3">No se encontraron platillos.</p>
+  </div>
+
+  <!-- Paginador -->
+  <app-paginator
+    *ngIf="store.totalPaginas() > 1"
+    [current]="store.paginaActual()"
+    [total]="store.totalPaginas()"
+    (pageChange)="onPageChange($event)">
+  </app-paginator>
+
+</div>
+
+<app-platillo-modal
+  [isOpen]="isModalOpen"
+  [platillo]="selectedPlatillo"
+  (close)="onCerrarModal()"
+  (save)="onGuardarPlatillo($event)">
+</app-platillo-modal>

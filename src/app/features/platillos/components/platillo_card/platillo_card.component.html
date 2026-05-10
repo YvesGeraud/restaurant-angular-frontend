@@ -1,0 +1,46 @@
+<app-card [hoverable]="true" padding="1rem">
+  <div class="d-flex flex-column h-100">
+    <div class="position-relative mb-3">
+      <div class="img-wrapper">
+        <img [src]="platillo().imagenUrl || 'assets/placeholder-food.png'" class="card-img rounded w-100" alt="Imagen de {{ platillo().nombre }}">
+      </div>
+      <div class="position-absolute top-0 end-0 p-2">
+        <span class="badge rounded-pill shadow-sm" [ngClass]="platillo().estado | statusBadge">
+        {{ platillo().estado ? 'Activo' : 'Inactivo' }}
+      </span>
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-start mb-2">
+      <h5 class="card-title mb-0 fw-bold">{{ platillo().nombre }}</h5>
+      <span class="badge bg-primary shadow-sm">{{ platillo().categoria.nombre || 'Sin categoría' }}</span>
+    </div>
+
+    <p class="card-text text-muted small flex-grow-1">
+      {{ platillo().descripcion | truncate:100 }}
+    </p>
+
+    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+      <span class="h5 mb-0 text-primary fw-bold">{{ platillo().precio | currency:'USD' }}</span>
+      <div class="btn-group">
+        <button class="btn btn-sm btn-outline-primary" (click)="onEdit.emit(platillo())">
+          <i class="bi bi-pencil"></i>
+        </button>
+        
+        <button *ngIf="platillo().estado" 
+                class="btn btn-sm btn-outline-danger" 
+                (click)="onDelete.emit(platillo())">
+          <i class="bi bi-trash"></i>
+        </button>
+
+        <button *ngIf="!platillo().estado" 
+                class="btn btn-sm btn-outline-success d-flex align-items-center gap-1" 
+                (click)="onActivate.emit(platillo())"
+                title="Reactivar">
+          <i class="bi bi-arrow-counterclockwise"></i>
+          <span class="small">Reactivar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</app-card>
