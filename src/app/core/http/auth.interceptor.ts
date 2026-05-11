@@ -17,14 +17,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Forzar credentials en todas las peticiones a nuestra API
   const authReq = req.clone({
-    withCredentials: true
+    withCredentials: true,
   });
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       // Si el error es 401 y no es una ruta de login (para evitar bucles)
       if (error.status === 401 && !req.url.includes('/auth/login')) {
-
         // Si falló el refresh, sesión expirada -> limpiar y redirigir
         if (req.url.includes('/auth/refresh')) {
           forceLogout();
@@ -48,12 +47,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             // Si el refresh falla, sesión terminada -> limpiar y redirigir
             forceLogout();
             return throwError(() => refreshError);
-          })
+          }),
         );
       }
 
       return throwError(() => error);
-    })
+    }),
   );
 };
-

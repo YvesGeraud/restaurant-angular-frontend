@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -22,7 +22,7 @@ import { Mesa, MesaFormData } from '../../models/mesa.model';
     RouterLink,
     MesaModalComponent,
     PaginatorComponent,
-    HasPermissionDirective
+    HasPermissionDirective,
   ],
   templateUrl: './mesas.component.html',
   styleUrl: './mesas.component.scss',
@@ -31,8 +31,8 @@ export class MesasComponent implements OnInit {
   protected readonly store = inject(MesasStore);
   private readonly notifications = inject(NotificationService);
 
-  isModalOpen = false;
-  selectedMesa: Mesa | null = null;
+  isModalOpen = signal(false);
+  selectedMesa = signal<Mesa | null>(null);
 
   ngOnInit(): void {
     if (this.store.mesas().length === 0) {
@@ -40,8 +40,9 @@ export class MesasComponent implements OnInit {
     }
   }
 
-  onSearch(termino: string): void {
-    this.store.applyFilter({ busqueda: termino });
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.store.applyFilter({ busqueda: input.value });
   }
 
   onPageChange(pagina: number): void {
@@ -49,25 +50,27 @@ export class MesasComponent implements OnInit {
   }
 
   onNuevaMesa(): void {
-    this.selectedMesa = null;
-    this.isModalOpen = true;
+    this.selectedMesa.set(null);
+    this.isModalOpen.set(true);
   }
 
   onEditarMesa(mesa: Mesa): void {
-    this.selectedMesa = { ...mesa };
-    this.isModalOpen = true;
+    this.selectedMesa.set({ ...mesa });
+    this.isModalOpen.set(true);
   }
 
   onEliminarMesa(mesa: Mesa): void {
-    this.notifications.confirm(
-      `¿Eliminar "${mesa.codigo}"? Esta acción no se puede deshacer.`,
-      'Confirmar Eliminación',
-      'Sí, eliminar'
-    ).subscribe(confirmado => {
-      if (confirmado && mesa.id) {
-        this.store.deleteMesa(mesa.id);
-      }
-    });
+    this.notifications
+      .confirm(
+        `¿Eliminar "${mesa.codigo}"? Esta acción no se puede deshacer.`,
+        'Confirmar Eliminación',
+        'Sí, eliminar',
+      )
+      .subscribe((confirmado) => {
+        if (confirmado && mesa.id) {
+          this.store.deleteMesa(mesa.id);
+        }
+      });
   }
 
   onReactivarMesa(mesa: Mesa): void {
@@ -77,8 +80,9 @@ export class MesasComponent implements OnInit {
   }
 
   onGuardarMesa(data: MesaFormData): void {
-    if (this.selectedMesa && this.selectedMesa.id) {
-      this.store.updateMesa(this.selectedMesa.id, data);
+    const mesa = this.selectedMesa();
+    if (mesa && mesa.id) {
+      this.store.updateMesa(mesa.id, data);
     } else {
       this.store.createMesa(data);
     }
@@ -86,7 +90,7 @@ export class MesasComponent implements OnInit {
   }
 
   onCerrarModal(): void {
-    this.isModalOpen = false;
-    this.selectedMesa = null;
+    this.isModalOpen.set(false);
+    this.selectedMesa.set(null);
   }
 }

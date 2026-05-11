@@ -6,12 +6,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './paginator.component.html',
-  styleUrl: './paginator.component.scss'
+  styleUrl: './paginator.component.scss',
 })
 export class PaginatorComponent {
   /** Cantidad total de páginas */
   readonly total = input.required<number>();
-  
+
   /** Página actual (1-indexed) */
   readonly current = input.required<number>();
 

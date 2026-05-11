@@ -9,19 +9,19 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ModalComponent],
   templateUrl: './mesa_modal.component.html',
-  styleUrl: './mesa_modal.component.scss'
+  styleUrl: './mesa_modal.component.scss',
 })
 export class MesaModalComponent implements OnChanges {
   private readonly fb = inject(FormBuilder);
 
   /** Estado de visibilidad (controlado por el padre) */
   readonly isOpen = input.required<boolean>();
-  
+
   /** Mesa a editar (null si es creación) */
   readonly mesa = input<Mesa | null>(null);
 
   /** Eventos */
-  readonly close = output<void>();
+  readonly modalClose = output<void>();
   readonly save = output<MesaFormData>();
 
   form: FormGroup = this.initForm();
@@ -33,7 +33,7 @@ export class MesaModalComponent implements OnChanges {
   }
 
   onClose(): void {
-    this.close.emit();
+    this.modalClose.emit();
   }
 
   onSave(): void {
@@ -49,7 +49,7 @@ export class MesaModalComponent implements OnChanges {
       codigo: ['', [Validators.required, Validators.minLength(2)]],
       capacidad: [2, [Validators.required, Validators.min(1), Validators.max(20)]],
       status: ['libre', [Validators.required]],
-      estado: [true, [Validators.required]]
+      estado: [true, [Validators.required]],
     });
   }
 
@@ -59,14 +59,14 @@ export class MesaModalComponent implements OnChanges {
         codigo: mesa.codigo,
         capacidad: mesa.capacidad,
         status: mesa.status,
-        estado: mesa.estado
+        estado: mesa.estado,
       });
     } else {
       this.form.reset({
         codigo: '',
         capacidad: 2,
         status: 'libre',
-        estado: true
+        estado: true,
       });
     }
   }

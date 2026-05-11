@@ -9,22 +9,35 @@ import { NotificationService } from '@core/services/notification.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="container py-4">
+    <div class="container py-4 animate-fade-in">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 class="mb-1 fw-bold">Gestión de Reservaciones</h2>
-          <p class="text-muted">Control de asistencia y estado de mesas</p>
+          <h2 class="mb-1 fw-bold text-dark">Gestión de Reservaciones</h2>
+          <p class="text-muted">Control de asistencia y estado de mesas en tiempo real</p>
         </div>
-        <button class="btn btn-outline-primary" (click)="cargarReservaciones()">
+        <button
+          type="button"
+          class="btn btn-outline-primary rounded-pill px-4 fw-bold"
+          (click)="cargarReservaciones()"
+        >
           <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
         </button>
       </div>
 
       <!-- Barra de Filtros Rápidos -->
       <div class="d-flex gap-2 mb-4">
-        <button class="btn btn-sm btn-light border px-3 rounded-pill active">Todas</button>
-        <button class="btn btn-sm btn-light border px-3 rounded-pill">Hoy</button>
-        <button class="btn btn-sm btn-light border px-3 rounded-pill">Pendientes</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-light border px-4 rounded-pill active shadow-sm"
+        >
+          Todas
+        </button>
+        <button type="button" class="btn btn-sm btn-light border px-4 rounded-pill shadow-sm">
+          Hoy
+        </button>
+        <button type="button" class="btn btn-sm btn-light border px-4 rounded-pill shadow-sm">
+          Pendientes
+        </button>
       </div>
 
       <!-- Data Table -->
@@ -32,90 +45,158 @@ import { NotificationService } from '@core/services/notification.service';
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
-              <tr>
-                <th scope="col" class="py-3 px-4 text-muted small fw-bold text-uppercase">Fecha y Hora</th>
-                <th scope="col" class="py-3 text-muted small fw-bold text-uppercase">Cliente / Mesa</th>
-                <th scope="col" class="py-3 text-muted small fw-bold text-uppercase">Personas</th>
-                <th scope="col" class="py-3 text-muted small fw-bold text-uppercase">Estado</th>
-                <th scope="col" class="py-3 px-4 text-end text-muted small fw-bold text-uppercase">Acciones</th>
+              <tr class="text-muted small fw-bold text-uppercase tracking-wider">
+                <th scope="col" class="py-3 px-4">Fecha y Hora</th>
+                <th scope="col" class="py-3">Cliente / Mesa</th>
+                <th scope="col" class="py-3">Personas</th>
+                <th scope="col" class="py-3">Estado</th>
+                <th scope="col" class="py-3 px-4 text-end">Acciones</th>
               </tr>
             </thead>
             <tbody>
               <!-- Cargando -->
-              <tr *ngIf="isLoading()">
-                <td colspan="5" class="text-center py-5">
-                  <div class="spinner-border text-primary" role="status"></div>
-                  <p class="mt-2 text-muted mb-0">Cargando reservaciones...</p>
-                </td>
-              </tr>
-
-              <!-- Lista Vacía -->
-              <tr *ngIf="!isLoading() && reservaciones().length === 0">
-                <td colspan="5" class="text-center py-5 text-muted">
-                  <i class="bi bi-calendar-x display-4 d-block mb-3 opacity-50"></i>
-                  <p class="mb-0">No hay reservaciones registradas por el momento.</p>
-                </td>
-              </tr>
-
-              <!-- Registros Reales -->
-              <tr *ngFor="let res of reservaciones()">
-                <td class="px-4">
-                  <div class="fw-bold">{{ res.fecha_reservacion | date:'dd/MM/yyyy' }}</div>
-                  <div class="small text-muted">{{ res.fecha_reservacion | date:'shortTime' }}</div>
-                </td>
-                <td>
-                  <div class="fw-medium">Cliente #{{ res.id_ct_cliente }}</div>
-                  <div class="small text-primary">Mesa #{{ res.id_ct_mesa }}</div>
-                </td>
-                <td>
-                  <span class="badge bg-light text-dark border px-2 py-1">
-                    <i class="bi bi-people me-1"></i> {{ res.num_personas }}
-                  </span>
-                </td>
-                <td>
-                  <!-- Estados dinámicos (Supongamos 1: Pendiente Pago, 2: Confirmada, 3: Completada) -->
-                  <span class="badge rounded-pill px-3 py-2" 
+              @if (isLoading()) {
+                <tr>
+                  <td colspan="5" class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" role="status"></div>
+                    <p class="text-muted mb-0">Sincronizando reservaciones...</p>
+                  </td>
+                </tr>
+              } @else {
+                <!-- Registros Reales -->
+                @for (res of reservaciones(); track res.id_rl_reservacion) {
+                  <tr>
+                    <td class="px-4">
+                      <div class="fw-bold text-dark">
+                        {{ res.fecha_reservacion | date: 'dd/MM/yyyy' }}
+                      </div>
+                      <div class="small text-muted">
+                        {{ res.fecha_reservacion | date: 'shortTime' }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="fw-medium">Cliente #{{ res.id_ct_cliente }}</div>
+                      <div class="small text-primary fw-bold">Mesa #{{ res.id_ct_mesa }}</div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+                        <i class="bi bi-people me-1"></i> {{ res.num_personas }}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        class="badge rounded-pill px-3 py-2 border shadow-sm"
                         [ngClass]="{
-                          'bg-warning-subtle text-warning border border-warning-subtle': res.id_ct_estado_reservacion === 1,
-                          'bg-success-subtle text-success border border-success-subtle': res.id_ct_estado_reservacion === 2,
-                          'bg-info-subtle text-info border border-info-subtle': res.id_ct_estado_reservacion === 3,
-                          'bg-secondary-subtle text-secondary border border-secondary-subtle': res.id_ct_estado_reservacion === 4,
-                          'bg-danger-subtle text-danger border border-danger-subtle': res.id_ct_estado_reservacion === 5,
-                          'bg-dark text-white': res.id_ct_estado_reservacion === 6
-                        }">
-                    {{ getEstadoTexto(res.id_ct_estado_reservacion) }}
-                  </span>
-                </td>
-                <td class="px-4 text-end">
-                  <div class="btn-group shadow-sm">
-                    <button *ngIf="res.id_ct_estado_reservacion === 2" class="btn btn-sm btn-success d-flex align-items-center gap-1 px-3" (click)="confirmarAsistencia(res)">
-                      <i class="bi bi-person-check"></i> Llegó
-                    </button>
-                    <button *ngIf="res.id_ct_estado_reservacion === 2" class="btn btn-sm btn-outline-warning" (click)="marcarNoShow(res)" title="No se presentó">
-                      <i class="bi bi-person-x"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" (click)="eliminarReservacion(res)" title="Eliminar/Cancelar definitivamente">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
+                          'bg-warning-subtle text-warning border-warning-subtle':
+                            res.id_ct_estado_reservacion === 1,
+                          'bg-success-subtle text-success border-success-subtle':
+                            res.id_ct_estado_reservacion === 2,
+                          'bg-info-subtle text-info border-info-subtle':
+                            res.id_ct_estado_reservacion === 3,
+                          'bg-secondary-subtle text-secondary border-secondary-subtle':
+                            res.id_ct_estado_reservacion === 4,
+                          'bg-danger-subtle text-danger border-danger-subtle':
+                            res.id_ct_estado_reservacion === 5,
+                          'bg-dark text-white border-dark': res.id_ct_estado_reservacion === 6,
+                        }"
+                      >
+                        <i
+                          class="bi me-1"
+                          [ngClass]="{
+                            'bi-hourglass-split': res.id_ct_estado_reservacion === 1,
+                            'bi-calendar-check': res.id_ct_estado_reservacion === 2,
+                            'bi-check2-all': res.id_ct_estado_reservacion === 3,
+                            'bi-person-x': res.id_ct_estado_reservacion === 4,
+                            'bi-x-circle': res.id_ct_estado_reservacion === 5,
+                            'bi-shield-exclamation': res.id_ct_estado_reservacion === 6,
+                          }"
+                        ></i>
+                        {{ getEstadoTexto(res.id_ct_estado_reservacion) }}
+                      </span>
+                    </td>
+                    <td class="px-4 text-end">
+                      <div class="btn-group shadow-sm rounded-3 overflow-hidden border">
+                        @if (res.id_ct_estado_reservacion === 2) {
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-white border-0 py-2 px-3 text-success"
+                            (click)="confirmarAsistencia(res)"
+                            title="Confirmar Asistencia"
+                          >
+                            <i class="bi bi-person-check fs-6"></i>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-white border-0 py-2 px-3 text-warning"
+                            (click)="marcarNoShow(res)"
+                            title="No se presentó"
+                          >
+                            <i class="bi bi-person-x fs-6"></i>
+                          </button>
+                        }
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-white border-0 py-2 px-3 text-danger"
+                          (click)="eliminarReservacion(res)"
+                          title="Cancelar reservación"
+                        >
+                          <i class="bi bi-trash fs-6"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                } @empty {
+                  <!-- Lista Vacía -->
+                  <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                      <i class="bi bi-calendar-x display-4 d-block mb-3 opacity-25"></i>
+                      <h5 class="fw-bold">Sin reservaciones</h5>
+                      <p class="mb-0">No hay registros que coincidan con los filtros actuales.</p>
+                    </td>
+                  </tr>
+                }
+              }
             </tbody>
           </table>
         </div>
       </div>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-      min-height: 100vh;
-    }
-  `]
+  styles: [
+    `
+      :host {
+        display: block;
+        min-height: 100vh;
+        background-color: #f8f9fa;
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.4s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .tracking-wider {
+        letter-spacing: 0.05em;
+      }
+      .btn-white {
+        background: white;
+      }
+      .btn-white:hover {
+        background: #f8f9fa;
+      }
+    `,
+  ],
 })
 export class ReservacionListPage implements OnInit {
-  private reservacionService = inject(ReservacionService);
-  private notifications = inject(NotificationService);
+  private readonly reservacionService = inject(ReservacionService);
+  private readonly notifications = inject(NotificationService);
 
   reservaciones = signal<Reservacion[]>([]);
   isLoading = signal(false);
@@ -134,7 +215,7 @@ export class ReservacionListPage implements OnInit {
       error: () => {
         this.notifications.error('Error al cargar la lista de reservaciones');
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -144,8 +225,13 @@ export class ReservacionListPage implements OnInit {
   }
 
   marcarNoShow(res: Reservacion) {
-    this.notifications.confirm('¿Marcar esta reservación como "No se presentó"?', 'Confirmar No-Show', 'Sí, marcar')
-      .subscribe(confirmado => {
+    this.notifications
+      .confirm(
+        `¿Marcar la reservación #${res.id_rl_reservacion} como "No se presentó"?`,
+        'Confirmar No-Show',
+        'Sí, marcar',
+      )
+      .subscribe((confirmado) => {
         if (confirmado) {
           this.notifications.info('Estado actualizado.');
         }
@@ -153,32 +239,34 @@ export class ReservacionListPage implements OnInit {
   }
 
   eliminarReservacion(res: Reservacion) {
-    this.notifications.confirm(
-      `¿Estás seguro de que deseas cancelar definitivamente la reservación de la mesa #${res.id_ct_mesa}?`,
-      'Cancelar Reservación',
-      'Sí, cancelar'
-    ).subscribe(confirmado => {
-      if (confirmado) {
-        this.reservacionService.eliminar(res.id_rl_reservacion).subscribe({
-          next: () => {
-            this.notifications.success('Reservación cancelada correctamente');
-            this.cargarReservaciones(); // Recargar lista
-          },
-          error: () => this.notifications.error('Error al intentar cancelar la reservación')
-        });
-      }
-    });
+    this.notifications
+      .confirm(
+        `¿Estás seguro de que deseas cancelar definitivamente la reservación de la mesa #${res.id_ct_mesa}?`,
+        'Cancelar Reservación',
+        'Sí, cancelar',
+      )
+      .subscribe((confirmado) => {
+        if (confirmado) {
+          this.reservacionService.eliminar(res.id_rl_reservacion).subscribe({
+            next: () => {
+              this.notifications.success('Reservación cancelada correctamente');
+              this.cargarReservaciones(); // Recargar lista
+            },
+            error: () => this.notifications.error('Error al intentar cancelar la reservación'),
+          });
+        }
+      });
   }
 
   getEstadoTexto(id: number): string {
-    switch(id) {
-      case 1: return 'Pendiente Pago';
-      case 2: return 'Confirmada';
-      case 3: return 'Completada';
-      case 4: return 'No Se Presentó';
-      case 5: return 'Cancelada';
-      case 6: return 'Cancelada con Cargo';
-      default: return 'Desconocido';
-    }
+    const estados: Record<number, string> = {
+      1: 'Pendiente Pago',
+      2: 'Confirmada',
+      3: 'Completada',
+      4: 'No Se Presentó',
+      5: 'Cancelada',
+      6: 'Cancelada con Cargo',
+    };
+    return estados[id] || 'Desconocido';
   }
 }

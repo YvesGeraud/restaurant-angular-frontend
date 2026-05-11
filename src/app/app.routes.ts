@@ -12,17 +12,22 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./features/public/pages/home/home.component').then(m => m.HomeComponent)
+        loadComponent: () =>
+          import('./features/public/pages/home/home.component').then((m) => m.HomeComponent),
       },
       {
         path: 'menu',
-        loadComponent: () => import('./features/public/pages/menu/menu').then(m => m.MenuComponent)
+        loadComponent: () =>
+          import('./features/public/pages/menu/menu').then((m) => m.MenuComponent),
       },
       {
         path: 'reservaciones',
-        loadChildren: () => import('./features/reservaciones/reservaciones.routes').then(m => m.RESERVACIONES_ROUTES)
-      }
-    ]
+        loadChildren: () =>
+          import('./features/reservaciones/reservaciones.routes').then(
+            (m) => m.RESERVACIONES_ROUTES,
+          ),
+      },
+    ],
   },
 
   // --- AUTH ROUTES ---
@@ -33,9 +38,12 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./features/auth/presentation/pages/login_page.component').then(m => m.LoginPageComponent)
-      }
-    ]
+        loadComponent: () =>
+          import('./features/auth/presentation/pages/login_page.component').then(
+            (m) => m.LoginPageComponent,
+          ),
+      },
+    ],
   },
 
   // --- ADMIN ROUTES ---
@@ -46,31 +54,55 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'platillos',
-        pathMatch: 'full'
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+      },
+      {
+        path: 'usuarios',
+        loadChildren: () =>
+          import('./features/usuarios/usuarios.routes').then((m) => m.USUARIOS_ROUTES),
       },
       {
         path: 'platillos',
-        loadChildren: () => import('./features/platillos/platillos.routes').then(m => m.PLATILLOS_ROUTES)
+        loadChildren: () =>
+          import('./features/platillos/platillos.routes').then((m) => m.PLATILLOS_ROUTES),
       },
       {
         path: 'mesas',
-        loadChildren: () => import('./features/mesas/mesas.routes').then(m => m.MESAS_ROUTES)
+        loadChildren: () => import('./features/mesas/mesas.routes').then((m) => m.MESAS_ROUTES),
       },
       {
         path: 'reservaciones',
-        loadComponent: () => import('./features/reservaciones/pages/reservacion-list/reservacion-list.page').then(m => m.ReservacionListPage)
+        loadComponent: () =>
+          import('./features/reservaciones/pages/reservacion-list/reservacion-list.page').then(
+            (m) => m.ReservacionListPage,
+          ),
       },
       {
         path: 'ordenes',
-        loadChildren: () => import('./features/ordenes/ordenes.routes').then(m => m.ORDENES_ROUTES)
-      }
-    ]
+        loadChildren: () =>
+          import('./features/ordenes/ordenes.routes').then((m) => m.ORDENES_ROUTES),
+      },
+      {
+        path: 'cocina',
+        loadChildren: () => import('./features/cocina/cocina.routes').then((m) => m.COCINA_ROUTES),
+      },
+      {
+        path: 'reportes',
+        loadChildren: () =>
+          import('./features/reportes/reportes.routes').then((m) => m.REPORTES_ROUTES),
+      },
+    ],
   },
 
   // --- FALLBACK ---
   {
     path: '**',
-    redirectTo: ''
-  }
+    redirectTo: '',
+  },
 ];

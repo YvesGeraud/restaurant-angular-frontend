@@ -18,7 +18,7 @@ $burgundy: #4a0404;
   color: #fff;
   border: none;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: $gold-hover;
     color: #fff;
@@ -31,7 +31,7 @@ $burgundy: #4a0404;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
@@ -44,7 +44,7 @@ $burgundy: #4a0404;
   border: 1px solid $gold;
   background: transparent;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: $gold;
     color: #fff;
@@ -81,11 +81,11 @@ $burgundy: #4a0404;
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   .loader-content {
     text-align: center;
   }
-  
+
   .brand-logo {
     font-size: 3rem;
     font-weight: 700;
@@ -93,7 +93,7 @@ $burgundy: #4a0404;
     margin-bottom: 20px;
     font-family: 'Playfair Display', serif; /* Or similar classic font */
   }
-  
+
   .loader-line {
     height: 2px;
     width: 0;
@@ -104,8 +104,12 @@ $burgundy: #4a0404;
 }
 
 @keyframes loaderFill {
-  0% { width: 0; }
-  100% { width: 100px; }
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100px;
+  }
 }
 
 /* Hero Section */
@@ -114,7 +118,7 @@ $burgundy: #4a0404;
   height: 100vh;
   min-height: 600px;
   overflow: hidden;
-  
+
   .hero-bg {
     position: absolute;
     top: 0;
@@ -127,11 +131,11 @@ $burgundy: #4a0404;
     transform: scale(1.05); /* Slight zoom for dramatic effect */
     transition: transform 10s ease;
   }
-  
+
   &:hover .hero-bg {
     transform: scale(1);
   }
-  
+
   .hero-overlay {
     position: absolute;
     top: 0;
@@ -140,9 +144,9 @@ $burgundy: #4a0404;
     height: 100%;
     background: linear-gradient(135deg, rgba(18, 18, 18, 0.9) 0%, rgba(74, 4, 4, 0.6) 100%);
   }
-  
+
   .hero-title {
-    text-shadow: 0 4px 12px rgba(0,0,0, 0.5);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     font-family: 'Playfair Display', serif;
   }
 }
@@ -151,21 +155,21 @@ $burgundy: #4a0404;
 .image-grid {
   position: relative;
   height: 500px;
-  
+
   .img-wrapper {
     position: absolute;
     border-radius: 1rem;
     overflow: hidden;
-    
+
     img {
       transition: transform 0.5s ease;
     }
-    
+
     &:hover img {
       transform: scale(1.05);
     }
   }
-  
+
   .main-img {
     width: 70%;
     top: 0;
@@ -173,7 +177,7 @@ $burgundy: #4a0404;
     z-index: 1;
     border: 4px solid $dark-charcoal;
   }
-  
+
   .secondary-img {
     width: 60%;
     bottom: 0;
@@ -186,7 +190,7 @@ $burgundy: #4a0404;
 .hover-slide {
   display: inline-block;
   transition: transform 0.3s ease;
-  
+
   &:hover {
     transform: translateX(10px);
   }
@@ -214,7 +218,7 @@ $burgundy: #4a0404;
   background-size: cover;
   background-position: center bottom;
   background-attachment: fixed; /* Parallax effect */
-  
+
   .cta-overlay {
     position: absolute;
     top: 0;

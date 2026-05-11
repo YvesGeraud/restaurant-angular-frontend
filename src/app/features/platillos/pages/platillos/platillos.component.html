@@ -2,10 +2,19 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0 fw-bold">Menú y Platillos</h2>
     <div class="d-flex gap-2">
-      <a routerLink="/platillos/batch" *appHasPermission="'PLATILLOS_CREAR'" class="btn btn-outline-secondary">
+      <a
+        routerLink="/platillos/batch"
+        *appHasPermission="'PLATILLOS_CREAR'"
+        class="btn btn-outline-secondary rounded-pill px-4"
+      >
         <i class="bi bi-file-earmark-spreadsheet me-2"></i>Carga Masiva
       </a>
-      <button *appHasPermission="'PLATILLOS_CREAR'" class="btn btn-primary" (click)="onNuevoPlatillo()">
+      <button
+        type="button"
+        *appHasPermission="'PLATILLOS_CREAR'"
+        class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold"
+        (click)="onNuevoPlatillo()"
+      >
         <i class="bi bi-plus-lg me-2"></i>Nuevo Platillo
       </button>
     </div>
@@ -14,116 +23,210 @@
   <!-- Barra de búsqueda -->
   <div class="row mb-4">
     <div class="col-md-6 col-lg-4">
-      <div class="input-group">
-        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-        <input type="text" class="form-control border-start-0" placeholder="Buscar platillos..." 
-               [value]="store.filtros().busqueda"
-               (input)="onSearch($any($event.target).value)">
+      <div class="input-group shadow-sm rounded-pill overflow-hidden border">
+        <span class="input-group-text bg-white border-0"
+          ><i class="bi bi-search text-muted"></i
+        ></span>
+        <input
+          type="text"
+          class="form-control border-0 shadow-none py-2"
+          placeholder="Buscar por nombre o descripción..."
+          [value]="store.filtros().busqueda"
+          (input)="onSearch($event)"
+        />
       </div>
     </div>
   </div>
 
   <!-- Estado de Error -->
-  <div *ngIf="store.error()" class="alert alert-danger" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i> {{ store.error() }}
-    <button class="btn btn-sm btn-outline-danger ms-3" (click)="store.loadPlatillos()">Reintentar</button>
-  </div>
+  @if (store.error()) {
+    <div class="alert alert-danger rounded-4 border-0 shadow-sm mb-4 animate-fade-in" role="alert">
+      <div class="d-flex align-items-center justify-content-between">
+        <div><i class="bi bi-exclamation-triangle me-2"></i> {{ store.error() }}</div>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger rounded-pill px-3"
+          (click)="store.loadPlatillos()"
+        >
+          Reintentar
+        </button>
+      </div>
+    </div>
+  }
 
   <!-- Data Table -->
-  <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 animate-fade-in">
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
         <thead class="table-light">
           <tr>
-            <th scope="col" class="py-3 px-4 text-muted font-weight-semibold" style="width: 80px;">Img</th>
-            <th scope="col" class="py-3 text-muted font-weight-semibold">Platillo</th>
-            <th scope="col" class="py-3 text-muted font-weight-semibold">Categoría</th>
-            <th scope="col" class="py-3 text-muted font-weight-semibold">Precio</th>
-            <th scope="col" class="py-3 text-muted font-weight-semibold">Estado</th>
-            <th scope="col" class="py-3 px-4 text-end text-muted font-weight-semibold">Acciones</th>
+            <th
+              scope="col"
+              class="py-3 px-4 text-muted small text-uppercase tracking-wider"
+              style="width: 80px"
+            >
+              Img
+            </th>
+            <th scope="col" class="py-3 text-muted small text-uppercase tracking-wider">
+              Platillo
+            </th>
+            <th scope="col" class="py-3 text-muted small text-uppercase tracking-wider">
+              Categoría
+            </th>
+            <th scope="col" class="py-3 text-muted small text-uppercase tracking-wider">Precio</th>
+            <th scope="col" class="py-3 text-muted small text-uppercase tracking-wider">Estado</th>
+            <th
+              scope="col"
+              class="py-3 px-4 text-end text-muted small text-uppercase tracking-wider"
+            >
+              Acciones
+            </th>
           </tr>
         </thead>
         <tbody>
           <!-- Skeleton Loaders -->
-          <ng-container *ngIf="store.loading()">
-            <tr *ngFor="let i of [1,2,3,4,5]">
-              <td class="px-4 py-3"><div class="spinner-grow spinner-grow-sm text-secondary" role="status"></div></td>
-              <td><div class="bg-secondary opacity-25 rounded w-50" style="height: 1rem;"></div></td>
-              <td><div class="bg-secondary opacity-25 rounded w-75" style="height: 1rem;"></div></td>
-              <td><div class="bg-secondary opacity-25 rounded w-25" style="height: 1rem;"></div></td>
-              <td><div class="bg-secondary opacity-25 rounded w-50" style="height: 1rem;"></div></td>
-              <td class="px-4 text-end"><div class="bg-secondary opacity-25 rounded w-50 ms-auto" style="height: 1rem;"></div></td>
-            </tr>
-          </ng-container>
-
-          <!-- Lista Real -->
-          <ng-container *ngIf="!store.loading()">
-            <tr *ngFor="let p of store.platillos()" [class.table-secondary]="!p.estado">
-              <td class="px-4 py-3">
-                <div class="rounded-3 overflow-hidden shadow-sm" style="width: 48px; height: 48px; background-color: #f8f9fa;">
-                  <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" class="w-100 h-100 object-fit-cover" [alt]="p.nombre">
-                  <div *ngIf="!p.imagenUrl" class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
-                    <i class="bi bi-image opacity-50"></i>
+          @if (store.loading()) {
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <tr>
+                <td class="px-4 py-3">
+                  <div class="spinner-grow spinner-grow-sm text-secondary" role="status"></div>
+                </td>
+                <td>
+                  <div class="bg-secondary opacity-25 rounded w-50" style="height: 1rem"></div>
+                </td>
+                <td>
+                  <div class="bg-secondary opacity-25 rounded w-75" style="height: 1rem"></div>
+                </td>
+                <td>
+                  <div class="bg-secondary opacity-25 rounded w-25" style="height: 1rem"></div>
+                </td>
+                <td>
+                  <div class="bg-secondary opacity-25 rounded w-50" style="height: 1rem"></div>
+                </td>
+                <td class="px-4 text-end">
+                  <div
+                    class="bg-secondary opacity-25 rounded w-50 ms-auto"
+                    style="height: 1rem"
+                  ></div>
+                </td>
+              </tr>
+            }
+          } @else {
+            <!-- Lista Real -->
+            @for (p of store.platillos(); track p.id) {
+              <tr [class.table-light]="!p.estado" [style.opacity]="p.estado ? 1 : 0.6">
+                <td class="px-4 py-3">
+                  <div
+                    class="rounded-3 overflow-hidden shadow-sm"
+                    style="width: 48px; height: 48px; background-color: #f8f9fa"
+                  >
+                    @if (p.imagenUrl) {
+                      <img
+                        [src]="p.imagenUrl"
+                        class="w-100 h-100 object-fit-cover"
+                        [alt]="p.nombre"
+                      />
+                    } @else {
+                      <div
+                        class="w-100 h-100 d-flex align-items-center justify-content-center text-muted"
+                      >
+                        <i class="bi bi-image opacity-50"></i>
+                      </div>
+                    }
                   </div>
-                </div>
-              </td>
-              <td>
-                <div class="fw-bold text-dark">{{ p.nombre }}</div>
-                <div class="small text-muted text-truncate" style="max-width: 250px;">{{ p.descripcion }}</div>
-              </td>
-              <td>
-                <span class="badge bg-light text-primary border px-2 py-1">{{ p.categoria.nombre }}</span>
-              </td>
-              <td class="fw-medium text-dark">
-                {{ p.precio | currency:'USD' }}
-              </td>
-              <td>
-                <span class="badge rounded-pill px-3 py-2" [ngClass]="p.estado ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
-                  <i class="bi me-1" [ngClass]="p.estado ? 'bi-check-circle' : 'bi-x-circle'"></i>
-                  {{ p.estado ? 'Disponible' : 'Agotado' }}
-                </span>
-              </td>
-              <td class="px-4 text-end">
-                <div class="btn-group shadow-sm">
-                  <button class="btn btn-sm btn-light border" (click)="onEditarPlatillo(p)" title="Editar">
-                    <i class="bi bi-pencil text-primary"></i>
-                  </button>
-                  <button *ngIf="p.estado" class="btn btn-sm btn-light border" (click)="onEliminarPlatillo(p)" title="Marcar Agotado">
-                    <i class="bi bi-trash text-danger"></i>
-                  </button>
-                  <button *ngIf="!p.estado" class="btn btn-sm btn-light border" (click)="onReactivarPlatillo(p)" title="Marcar Disponible">
-                    <i class="bi bi-arrow-counterclockwise text-success"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </ng-container>
-
-          <!-- Empty State Row -->
-          <tr *ngIf="!store.loading() && store.platillos().length === 0 && !store.error()">
-            <td colspan="6" class="text-center py-5 text-muted">
-              <i class="bi bi-inbox display-4 d-block mb-3 opacity-50"></i>
-              <p class="mb-0">No se encontraron platillos en el catálogo.</p>
-            </td>
-          </tr>
+                </td>
+                <td>
+                  <div class="fw-bold text-dark">{{ p.nombre }}</div>
+                  <div class="small text-muted text-truncate" style="max-width: 250px">
+                    {{ p.descripcion }}
+                  </div>
+                </td>
+                <td>
+                  <span class="badge bg-light text-primary border px-2 py-1">{{
+                    p.categoria.nombre
+                  }}</span>
+                </td>
+                <td class="fw-medium text-dark">
+                  {{ p.precio | currency: 'USD' }}
+                </td>
+                <td>
+                  <span
+                    class="badge rounded-pill px-3 py-2"
+                    [ngClass]="
+                      p.estado ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'
+                    "
+                  >
+                    <i class="bi me-1" [ngClass]="p.estado ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                    {{ p.estado ? 'Disponible' : 'Agotado' }}
+                  </span>
+                </td>
+                <td class="px-4 text-end">
+                  <div class="btn-group shadow-sm rounded-3 overflow-hidden border">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-white border-0 py-2 px-3"
+                      (click)="onEditarPlatillo(p)"
+                      aria-label="Editar platillo"
+                    >
+                      <i class="bi bi-pencil text-primary"></i>
+                    </button>
+                    @if (p.estado) {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-white border-0 py-2 px-3"
+                        (click)="onEliminarPlatillo(p)"
+                        aria-label="Marcar como agotado"
+                      >
+                        <i class="bi bi-trash text-danger"></i>
+                      </button>
+                    } @else {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-white border-0 py-2 px-3"
+                        (click)="onReactivarPlatillo(p)"
+                        aria-label="Marcar como disponible"
+                      >
+                        <i class="bi bi-arrow-counterclockwise text-success"></i>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <!-- Empty State Row -->
+              @if (!store.error()) {
+                <tr>
+                  <td colspan="6" class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox display-4 d-block mb-3 opacity-50"></i>
+                    <h5 class="fw-bold">No se encontraron platillos</h5>
+                    <p class="mb-0">Prueba ajustando tu búsqueda o agrega uno nuevo.</p>
+                  </td>
+                </tr>
+              }
+            }
+          }
         </tbody>
       </table>
     </div>
   </div>
 
   <!-- Paginador -->
-  <app-paginator
-    *ngIf="store.totalPaginas() > 1"
-    [current]="store.paginaActual()"
-    [total]="store.totalPaginas()"
-    (pageChange)="onPageChange($event)">
-  </app-paginator>
-
+  @if (store.totalPaginas() > 1) {
+    <app-paginator
+      [current]="store.paginaActual()"
+      [total]="store.totalPaginas()"
+      (pageChange)="onPageChange($event)"
+    >
+    </app-paginator>
+  }
 </div>
 
-<app-platillo-modal
-  [isOpen]="isModalOpen"
-  [platillo]="selectedPlatillo"
-  (close)="onCerrarModal()"
-  (save)="onGuardarPlatillo($event)">
-</app-platillo-modal>
+@if (isModalOpen()) {
+  <app-platillo-modal
+    [isOpen]="isModalOpen()"
+    [platillo]="selectedPlatillo()"
+    (modalClose)="onCerrarModal()"
+    (save)="onGuardarPlatillo($event)"
+  >
+  </app-platillo-modal>
+}

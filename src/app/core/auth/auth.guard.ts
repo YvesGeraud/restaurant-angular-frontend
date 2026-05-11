@@ -21,27 +21,26 @@ export const authGuard: CanActivateFn = () => {
       // Si no estÃ¡ autenticado, redirigir al login
       router.navigate(['/login']);
       return false;
-    })
+    }),
   );
 };
 
 export const guestGuard: CanActivateFn = () => {
-    const store = inject(AuthStore);
-    const router = inject(Router);
-  
-    // Convertimos el signal a observable para manejar la espera de inicialización
-    return toObservable(store.isInitialized).pipe(
-      filter((isInitialized): isInitialized is true => !!isInitialized),
-      take(1),
-      map(() => {
-        if (!store.isAuthenticated()) {
-          return true;
-        }
-  
-        // Si YA está autenticado, redirigir al dashboard (platillos)
-        router.navigate(['/admin/platillos']);
-        return false;
-      })
-    );
-  };
+  const store = inject(AuthStore);
+  const router = inject(Router);
 
+  // Convertimos el signal a observable para manejar la espera de inicialización
+  return toObservable(store.isInitialized).pipe(
+    filter((isInitialized): isInitialized is true => !!isInitialized),
+    take(1),
+    map(() => {
+      if (!store.isAuthenticated()) {
+        return true;
+      }
+
+      // Si YA está autenticado, redirigir al dashboard (platillos)
+      router.navigate(['/admin/platillos']);
+      return false;
+    }),
+  );
+};

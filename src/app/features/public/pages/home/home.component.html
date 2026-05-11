@@ -13,17 +13,27 @@
   <div class="container h-100 d-flex flex-column justify-content-center position-relative z-1">
     <div class="row">
       <div class="col-lg-8 col-md-10">
-        <h1 #heroTitle class="display-1 fw-bold text-white mb-4 hero-title" style="opacity: 0;">
+        <h1 #heroTitle class="display-1 fw-bold text-white mb-4 hero-title" style="opacity: 0">
           Sabores que cuentan historias.
         </h1>
-        <p #heroSubtitle class="lead text-white-50 mb-5 fs-4 fw-light hero-subtitle" style="opacity: 0; max-width: 600px;">
+        <p
+          #heroSubtitle
+          class="lead text-white-50 mb-5 fs-4 fw-light hero-subtitle"
+          style="opacity: 0; max-width: 600px"
+        >
           Descubre la experiencia de alta cocina en un ambiente clásico, elegante y atemporal.
         </p>
-        <div #heroButtons class="d-flex flex-wrap gap-3" style="opacity: 0;">
-          <a routerLink="/reservaciones/crear" class="btn btn-gold btn-lg px-5 py-3 rounded-pill fw-bold">
+        <div #heroButtons class="d-flex flex-wrap gap-3" style="opacity: 0">
+          <a
+            routerLink="/reservaciones/crear"
+            class="btn btn-gold btn-lg px-5 py-3 rounded-pill fw-bold"
+          >
             Reserva tu Experiencia
           </a>
-          <a routerLink="/menu" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-medium glass-btn">
+          <a
+            routerLink="/menu"
+            class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-medium glass-btn"
+          >
             Explorar el Menú
           </a>
         </div>
@@ -40,7 +50,9 @@
         <h6 class="text-gold text-uppercase letter-spacing-2 mb-3">Nuestra Filosofía</h6>
         <h2 class="display-4 fw-bold mb-4">El arte de la gastronomía premium</h2>
         <p class="text-white-50 fs-5 mb-4">
-          Inspirados en la elegancia de los restaurantes clásicos, cuidamos cada detalle. Desde la selección de nuestros cortes de carne premium hasta la reducción de nuestros vinos tintos, cada elemento está diseñado para atraparte.
+          Inspirados en la elegancia de los restaurantes clásicos, cuidamos cada detalle. Desde la
+          selección de nuestros cortes de carne premium hasta la reducción de nuestros vinos tintos,
+          cada elemento está diseñado para atraparte.
         </p>
         <a routerLink="/menu" class="text-gold text-decoration-none fw-bold hover-slide">
           Conoce nuestra oferta gastronómica <i class="bi bi-arrow-right ms-2"></i>
@@ -49,10 +61,18 @@
       <div class="col-lg-6 offset-lg-1">
         <div class="image-grid">
           <div class="img-wrapper main-img">
-            <img src="assets/images/premium-steak.png" alt="Corte Premium" class="img-fluid rounded-4 shadow-lg">
+            <img
+              src="assets/images/premium-steak.png"
+              alt="Corte Premium"
+              class="img-fluid rounded-4 shadow-lg"
+            />
           </div>
           <div class="img-wrapper secondary-img">
-            <img src="assets/images/premium-wine.png" alt="Vino y Postre" class="img-fluid rounded-4 shadow-lg">
+            <img
+              src="assets/images/premium-wine.png"
+              alt="Vino y Postre"
+              class="img-fluid rounded-4 shadow-lg"
+            />
           </div>
         </div>
       </div>
@@ -68,23 +88,39 @@
       <h2 class="display-5 fw-bold text-white">Nuestros Especiales</h2>
     </div>
 
-    <div id="featuredCarousel" class="carousel slide carousel-fade mx-auto" data-bs-ride="carousel" style="max-width: 900px;">
+    <div
+      id="featuredCarousel"
+      class="carousel slide carousel-fade mx-auto"
+      data-bs-ride="carousel"
+      style="max-width: 900px"
+    >
       <div class="carousel-inner rounded-4 shadow-lg overflow-hidden border border-gold-subtle">
-        
         <!-- Slide 1 -->
         <div class="carousel-item active" data-bs-interval="4000">
           <div class="row g-0">
             <div class="col-md-6">
-              <img src="assets/images/premium-steak.png" class="d-block w-100 h-100 object-fit-cover" alt="Filet Mignon" style="min-height: 400px;">
+              <img
+                src="assets/images/premium-steak.png"
+                class="d-block w-100 h-100 object-fit-cover"
+                alt="Filet Mignon"
+                style="min-height: 400px"
+              />
             </div>
             <div class="col-md-6 bg-dark-grey d-flex align-items-center">
               <div class="card-body p-5 text-white">
                 <span class="badge bg-gold text-dark mb-3 px-3 py-2">Especialidad</span>
                 <h3 class="card-title fw-bold mb-3">Filet Mignon en Reducción</h3>
-                <p class="card-text text-white-50 mb-4">Un corte de centro cocinado a la perfección, bañado en una reducción de vino tinto y acompañado de finas hierbas.</p>
+                <p class="card-text text-white-50 mb-4">
+                  Un corte de centro cocinado a la perfección, bañado en una reducción de vino tinto
+                  y acompañado de finas hierbas.
+                </p>
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="fs-4 fw-bold text-gold">$55.00</span>
-                  <a routerLink="/reservaciones/crear" class="btn btn-outline-gold rounded-pill px-4">Reservar para probar</a>
+                  <a
+                    routerLink="/reservaciones/crear"
+                    class="btn btn-outline-gold rounded-pill px-4"
+                    >Reservar para probar</a
+                  >
                 </div>
               </div>
             </div>
@@ -95,30 +131,51 @@
         <div class="carousel-item" data-bs-interval="4000">
           <div class="row g-0">
             <div class="col-md-6">
-              <img src="assets/images/premium-salmon.png" class="d-block w-100 h-100 object-fit-cover" alt="Salmón Premium" style="min-height: 400px;">
+              <img
+                src="assets/images/premium-salmon.png"
+                class="d-block w-100 h-100 object-fit-cover"
+                alt="Salmón Premium"
+                style="min-height: 400px"
+              />
             </div>
             <div class="col-md-6 bg-dark-grey d-flex align-items-center">
               <div class="card-body p-5 text-white">
                 <span class="badge bg-gold text-dark mb-3 px-3 py-2">Del Mar</span>
                 <h3 class="card-title fw-bold mb-3">Salmón a la Parrilla</h3>
-                <p class="card-text text-white-50 mb-4">Fresco filete de salmón sellado, sobre una cama de espárragos crujientes y un toque sutil de salsa de mantequilla.</p>
+                <p class="card-text text-white-50 mb-4">
+                  Fresco filete de salmón sellado, sobre una cama de espárragos crujientes y un
+                  toque sutil de salsa de mantequilla.
+                </p>
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="fs-4 fw-bold text-gold">$48.00</span>
-                  <a routerLink="/reservaciones/crear" class="btn btn-outline-gold rounded-pill px-4">Reservar para probar</a>
+                  <a
+                    routerLink="/reservaciones/crear"
+                    class="btn btn-outline-gold rounded-pill px-4"
+                    >Reservar para probar</a
+                  >
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
-      
+
       <!-- Controles -->
-      <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#featuredCarousel"
+        data-bs-slide="prev"
+      >
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Anterior</span>
       </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#featuredCarousel"
+        data-bs-slide="next"
+      >
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Siguiente</span>
       </button>
@@ -134,7 +191,10 @@
     <p class="fs-4 text-white-50 mb-5 max-w-700 mx-auto">
       No te pierdas la oportunidad de vivir una velada inolvidable. Asegura tu lugar hoy mismo.
     </p>
-    <a routerLink="/reservaciones/crear" class="btn btn-gold btn-lg px-5 py-3 rounded-pill fw-bold fs-5 shadow-lg">
+    <a
+      routerLink="/reservaciones/crear"
+      class="btn btn-gold btn-lg px-5 py-3 rounded-pill fw-bold fs-5 shadow-lg"
+    >
       <i class="bi bi-calendar-check me-2"></i> Reservar Ahora
     </a>
   </div>

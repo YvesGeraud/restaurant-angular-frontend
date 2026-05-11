@@ -4,32 +4,93 @@
 
   <div class="d-flex flex-grow-1">
     <!-- Sidebar -->
-    <aside class="sidebar bg-white border-end shadow-sm d-none d-md-flex flex-column" style="width: 250px; min-height: calc(100vh - 76px);">
+    <aside
+      class="sidebar bg-white border-end shadow-sm d-none d-md-flex flex-column"
+      style="width: 250px; min-height: calc(100vh - 76px)"
+    >
       <div class="p-3">
-        <span class="text-uppercase text-muted fw-bold small tracking-wider mb-2 d-block px-3">Gestión</span>
+        <span class="text-uppercase text-muted fw-bold small tracking-wider mb-2 d-block px-3"
+          >Gestión</span
+        >
         <ul class="nav nav-pills flex-column gap-1">
-          <li class="nav-item">
-            <a class="nav-link text-dark py-2 px-3 d-flex align-items-center" routerLink="/admin/platillos" routerLinkActive="active bg-primary text-white">
+          <li class="nav-item" *appHasPermission="'REPORTES_VER'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/dashboard"
+              routerLinkActive="active bg-primary text-white"
+            >
+              <i class="bi bi-speedometer2 me-3 fs-5"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item" *appHasPermission="'USUARIOS_VER'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/usuarios"
+              routerLinkActive="active bg-primary text-white"
+            >
+              <i class="bi bi-people me-3 fs-5"></i>
+              <span>Personal</span>
+            </a>
+          </li>
+          <li class="nav-item" *appHasPermission="'PLATILLOS_VER'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/platillos"
+              routerLinkActive="active bg-primary text-white"
+            >
               <i class="bi bi-egg-fried me-3 fs-5"></i>
               <span>Platillos</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark py-2 px-3 d-flex align-items-center" routerLink="/admin/mesas" routerLinkActive="active bg-primary text-white">
+          <li class="nav-item" *appHasPermission="'RESERVACIONES_VER'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/mesas"
+              routerLinkActive="active bg-primary text-white"
+            >
               <i class="bi bi-grid-3x3-gap me-3 fs-5"></i>
               <span>Mesas</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark py-2 px-3 d-flex align-items-center" routerLink="/admin/reservaciones" routerLinkActive="active bg-primary text-white">
+          <li class="nav-item" *appHasPermission="'RESERVACIONES_VER'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/reservaciones"
+              routerLinkActive="active bg-primary text-white"
+            >
               <i class="bi bi-calendar-check me-3 fs-5"></i>
               <span>Reservaciones</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark py-2 px-3 d-flex align-items-center" routerLink="/admin/ordenes" routerLinkActive="active bg-primary text-white">
+          <li class="nav-item" *appHasPermission="'ORDENES_CREAR'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/ordenes"
+              routerLinkActive="active bg-primary text-white"
+            >
               <i class="bi bi-receipt me-3 fs-5"></i>
               <span>Órdenes</span>
+            </a>
+          </li>
+          <li class="nav-item" *appHasPermission="'ORDENES_ESTADO'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/cocina"
+              routerLinkActive="active bg-primary text-white"
+            >
+              <i class="bi bi-fire me-3 fs-5"></i>
+              <span>Cocina</span>
+            </a>
+          </li>
+          <li class="nav-item" *appHasPermission="'REPORTES_VER'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/reportes"
+              routerLinkActive="active bg-primary text-white"
+            >
+              <i class="bi bi-graph-up me-3 fs-5"></i>
+              <span>Reportes</span>
             </a>
           </li>
         </ul>
@@ -37,7 +98,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content flex-grow-1 p-4 overflow-auto" style="height: calc(100vh - 76px);">
+    <main class="main-content flex-grow-1 p-4 overflow-auto" style="height: calc(100vh - 76px)">
       <router-outlet></router-outlet>
     </main>
   </div>

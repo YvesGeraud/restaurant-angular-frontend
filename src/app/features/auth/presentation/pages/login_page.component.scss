@@ -2,7 +2,7 @@
 
 .login-page {
   background-color: #f8fafc;
-  background-image: 
+  background-image:
     radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
     radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
 }
@@ -53,13 +53,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .decoration-circle {
@@ -76,13 +86,27 @@
 }
 
 // ── Text Utilities ──────────────────────────────────────────────────────────
-.text-slate-900 { color: #0f172a; }
-.text-slate-700 { color: #334155; }
-.text-slate-500 { color: #64748b; }
-.text-slate-400 { color: #94a3b8; }
-.bg-slate-50 { background-color: #f8fafc; }
-.border-slate-100 { border-color: #f1f5f9; }
-.border-slate-200 { border-color: #e2e8f0; }
+.text-slate-900 {
+  color: #0f172a;
+}
+.text-slate-700 {
+  color: #334155;
+}
+.text-slate-500 {
+  color: #64748b;
+}
+.text-slate-400 {
+  color: #94a3b8;
+}
+.bg-slate-50 {
+  background-color: #f8fafc;
+}
+.border-slate-100 {
+  border-color: #f1f5f9;
+}
+.border-slate-200 {
+  border-color: #e2e8f0;
+}
 
 .cursor-pointer {
   cursor: pointer;

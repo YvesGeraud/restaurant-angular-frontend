@@ -1,20 +1,44 @@
-<div class="container py-4">
+<div class="container py-4 animate-fade-in">
   <div class="d-flex align-items-center mb-4">
-    <a routerLink="/platillos" class="btn btn-outline-secondary me-3">
-      <i class="bi bi-arrow-left"></i> Volver
+    <a routerLink="/platillos" class="btn btn-outline-secondary me-3 rounded-pill px-3 shadow-sm">
+      <i class="bi bi-arrow-left me-2"></i>Volver al Menú
     </a>
-    <h2 class="mb-0 fw-bold">Carga Masiva de Platillos</h2>
+    <h2 class="mb-0 fw-bold text-dark">Carga Masiva de Platillos</h2>
   </div>
 
-  <app-card [hoverable]="false">
-    <div class="p-4 text-center">
-      <i class="bi bi-file-earmark-spreadsheet display-1 text-muted mb-3"></i>
-      <h3>Subir Archivo Excel o CSV</h3>
-      <p class="text-muted">Descarga la plantilla, llénala con los datos de tus platillos y súbela aquí.</p>
-      
-      <div class="d-flex justify-content-center gap-3 mt-4">
-        <button class="btn btn-outline-primary">Descargar Plantilla</button>
-        <button class="btn btn-primary" (click)="onProcesar()">Seleccionar Archivo</button>
+  <app-card [hoverable]="false" class="shadow-sm">
+    <div class="p-5 text-center">
+      <div class="mb-4">
+        <i class="bi bi-file-earmark-spreadsheet display-1 text-primary opacity-25"></i>
+      </div>
+      <h3 class="fw-bold text-dark">Subir Catálogo en Excel o CSV</h3>
+      <p class="text-muted mx-auto" style="max-width: 500px">
+        Optimiza tu tiempo cargando múltiples platillos a la vez. Descarga la plantilla oficial,
+        llénala con los datos y súbela al sistema.
+      </p>
+
+      <div class="d-flex justify-content-center gap-3 mt-5">
+        <button type="button" class="btn btn-outline-primary rounded-pill px-4 fw-bold">
+          <i class="bi bi-download me-2"></i>Descargar Plantilla
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"
+          (click)="onProcesar()"
+        >
+          <i class="bi bi-cloud-upload me-2"></i>Seleccionar Archivo
+        </button>
+      </div>
+
+      <div class="mt-5 p-4 bg-light rounded-4 text-start border">
+        <h6 class="fw-bold text-dark mb-3">
+          <i class="bi bi-info-circle me-2 text-primary"></i>Instrucciones importantes:
+        </h6>
+        <ul class="small text-muted mb-0">
+          <li>Asegúrate de que las categorías existan previamente en el sistema.</li>
+          <li>Los precios deben ser numéricos y mayores a cero.</li>
+          <li>La columna de "Imagen URL" es opcional.</li>
+        </ul>
       </div>
     </div>
   </app-card>

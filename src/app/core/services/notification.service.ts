@@ -4,7 +4,6 @@ import { Observable, from } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-  
   success(message: string, title = '¡Éxito!'): void {
     Swal.fire({
       icon: 'success',
@@ -12,7 +11,7 @@ export class NotificationService {
       text: message,
       timer: 3000,
       timerProgressBar: true,
-      showConfirmButton: false
+      showConfirmButton: false,
     });
   }
 
@@ -20,7 +19,7 @@ export class NotificationService {
     Swal.fire({
       icon: 'error',
       title,
-      text: message
+      text: message,
     });
   }
 
@@ -28,7 +27,7 @@ export class NotificationService {
     Swal.fire({
       icon: 'warning',
       title,
-      text: message
+      text: message,
     });
   }
 
@@ -36,11 +35,15 @@ export class NotificationService {
     Swal.fire({
       icon: 'info',
       title,
-      text: message
+      text: message,
     });
   }
 
-  confirm(message: string, title = '¿Estás seguro?', confirmText = 'Sí, continuar'): Observable<boolean> {
+  confirm(
+    message: string,
+    title = '¿Estás seguro?',
+    confirmText = 'Sí, continuar',
+  ): Observable<boolean> {
     return from(
       Swal.fire({
         title,
@@ -50,8 +53,8 @@ export class NotificationService {
         confirmButtonColor: '#10b981', // Emerald primary
         cancelButtonColor: '#6366f1', // Indigo secondary
         confirmButtonText: confirmText,
-        cancelButtonText: 'Cancelar'
-      }).then(result => result.isConfirmed)
+        cancelButtonText: 'Cancelar',
+      }).then((result) => result.isConfirmed),
     );
   }
 }

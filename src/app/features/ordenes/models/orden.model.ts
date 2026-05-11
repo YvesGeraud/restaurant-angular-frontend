@@ -1,4 +1,10 @@
-export type EstadoOrden = 'PENDIENTE' | 'EN_PROCESO' | 'LISTO' | 'ENTREGADO' | 'PAGADA' | 'CANCELADO';
+export type EstadoOrden =
+  | 'PENDIENTE'
+  | 'EN_PROCESO'
+  | 'LISTO'
+  | 'ENTREGADO'
+  | 'PAGADA'
+  | 'CANCELADO';
 
 export interface DetalleOrden {
   id_ct_platillo: number;
@@ -8,7 +14,7 @@ export interface DetalleOrden {
   platillo?: {
     id_ct_platillo: number;
     nombre: string;
-    imagen_url: string;
+    imagen_url?: string;
   };
 }
 
@@ -20,6 +26,10 @@ export interface Orden {
   estado: EstadoOrden;
   fecha_reg: string;
   detalles: DetalleOrden[];
+  mesa?: {
+    id_ct_mesa: number;
+    codigo: string;
+  };
 }
 
 export interface CrearOrdenFormData {

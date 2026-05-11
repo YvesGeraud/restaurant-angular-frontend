@@ -1,7 +1,3 @@
-<div 
-  class="app-card" 
-  [class.hoverable]="hoverable()"
-  [ngStyle]="{ 'padding': padding() }"
->
+<div class="app-card" [class.hoverable]="hoverable()" [ngStyle]="{ padding: padding() }">
   <ng-content></ng-content>
 </div>

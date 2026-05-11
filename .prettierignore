@@ -1,0 +1,16 @@
+# Artifacts
+dist/
+node_modules/
+package-lock.json
+
+# Angular
+.angular/
+src/assets/
+
+# IDE
+.vscode/
+.idea/
+
+# Others
+*.md
+*.json

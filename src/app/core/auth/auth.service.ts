@@ -4,6 +4,25 @@ import { Observable, map } from 'rxjs';
 import { User, AuthCredentials } from './auth.model';
 import { environment } from '@environments/environment';
 
+interface UserDTO {
+  id_ct_usuario: number;
+  usuario: string;
+  email?: string | null;
+  nombre_completo: string;
+  id_ct_rol: number;
+  rol: string;
+  permisos: string[];
+}
+
+interface AuthResponse {
+  datos: {
+    usuario: UserDTO;
+    token?: string;
+  };
+  mensaje?: string;
+  exito: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -11,7 +30,7 @@ export class AuthService {
 
   private readonly options = { withCredentials: true };
 
-  private mapUser(dto: any): User {
+  private mapUser(dto: UserDTO): User {
     return {
       id: dto.id_ct_usuario,
       usuario: dto.usuario,
@@ -19,14 +38,14 @@ export class AuthService {
       nombreCompleto: dto.nombre_completo,
       idRol: dto.id_ct_rol,
       rol: dto.rol,
-      permisos: dto.permisos || []
+      permisos: dto.permisos || [],
     };
   }
 
   login(credentials: AuthCredentials): Observable<User> {
-    return this.http.post<any>(`${this.apiUrl}/login`, credentials, this.options).pipe(
-      map(res => this.mapUser(res.datos.usuario))
-    );
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/login`, credentials, this.options)
+      .pipe(map((res) => this.mapUser(res.datos.usuario)));
   }
 
   logout(): Observable<void> {
@@ -34,12 +53,12 @@ export class AuthService {
   }
 
   me(): Observable<User> {
-    return this.http.get<any>(`${this.apiUrl}/me`, this.options).pipe(
-      map(res => this.mapUser(res.datos.usuario))
-    );
+    return this.http
+      .get<AuthResponse>(`${this.apiUrl}/me`, this.options)
+      .pipe(map((res) => this.mapUser(res.datos.usuario)));
   }
 
-  refreshToken(): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/refresh`, {}, this.options);
+  refreshToken(): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/refresh`, {}, this.options);
   }
 }

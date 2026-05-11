@@ -7,11 +7,11 @@
 .nav-link {
   color: #64748b;
   transition: all 0.2s ease;
-  
+
   &:hover {
     color: #6366f1;
   }
-  
+
   &.active {
     color: #6366f1 !important;
     font-weight: 600;
@@ -26,8 +26,18 @@
   background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
 }
 
-.text-indigo { color: #6366f1; }
-.text-slate-800 { color: #1e293b; }
-.text-slate-600 { color: #475569; }
-.text-slate-500 { color: #64748b; }
-.bg-slate-100 { background-color: #f1f5f9; }
+.text-indigo {
+  color: #6366f1;
+}
+.text-slate-800 {
+  color: #1e293b;
+}
+.text-slate-600 {
+  color: #475569;
+}
+.text-slate-500 {
+  color: #64748b;
+}
+.bg-slate-100 {
+  background-color: #f1f5f9;
+}

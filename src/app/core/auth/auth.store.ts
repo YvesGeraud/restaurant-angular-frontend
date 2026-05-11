@@ -21,7 +21,7 @@ export class AuthStore {
     user: null,
     isAuthenticated: false,
     loading: false,
-    isInitialized: false
+    isInitialized: false,
   });
 
   // ── Selectores públicos ─────────────────────────────────────────────────────
@@ -37,7 +37,7 @@ export class AuthStore {
   hasPermission(permission: string | string[]): boolean {
     const userPerms = this.state().user?.permisos || [];
     if (Array.isArray(permission)) {
-      return permission.some(p => userPerms.includes(p));
+      return permission.some((p) => userPerms.includes(p));
     }
     return userPerms.includes(permission);
   }
@@ -48,52 +48,58 @@ export class AuthStore {
   initSession(): void {
     if (this.state().isInitialized) return;
 
-    this.state.update(s => ({ ...s, loading: true }));
-    this.repository.me().pipe(
-      tap(user => {
-        this.state.update(s => ({ ...s, user, isAuthenticated: true }));
-      }),
-      catchError(() => {
-        // Si /me falla (401), simplemente no hay sesión
-        this.state.update(s => ({ ...s, user: null, isAuthenticated: false }));
-        return of(null);
-      }),
-      finalize(() => {
-        this.state.update(s => ({ ...s, loading: false, isInitialized: true }));
-      })
-    ).subscribe();
+    this.state.update((s) => ({ ...s, loading: true }));
+    this.repository
+      .me()
+      .pipe(
+        tap((user) => {
+          this.state.update((s) => ({ ...s, user, isAuthenticated: true }));
+        }),
+        catchError(() => {
+          // Si /me falla (401), simplemente no hay sesión
+          this.state.update((s) => ({ ...s, user: null, isAuthenticated: false }));
+          return of(null);
+        }),
+        finalize(() => {
+          this.state.update((s) => ({ ...s, loading: false, isInitialized: true }));
+        }),
+      )
+      .subscribe();
   }
 
   login(credentials: AuthCredentials): void {
-    this.state.update(s => ({ ...s, loading: true }));
-    this.repository.login(credentials).pipe(
-      tap(user => {
-        this.state.update(s => ({ ...s, user, isAuthenticated: true }));
-        this.router.navigate(['/admin/platillos']);
-      }),
-      catchError(err => {
-        // El error se maneja en el componente (vía NotificationService posiblemente)
-        throw err;
-      }),
-      finalize(() => this.state.update(s => ({ ...s, loading: false })))
-    ).subscribe();
+    this.state.update((s) => ({ ...s, loading: true }));
+    this.repository
+      .login(credentials)
+      .pipe(
+        tap((user) => {
+          this.state.update((s) => ({ ...s, user, isAuthenticated: true }));
+          this.router.navigate(['/admin/platillos']);
+        }),
+        catchError((err) => {
+          // El error se maneja en el componente (vía NotificationService posiblemente)
+          throw err;
+        }),
+        finalize(() => this.state.update((s) => ({ ...s, loading: false }))),
+      )
+      .subscribe();
   }
 
   /** Limpiar el estado de sesión sin llamar al backend (usado por el interceptor) */
   clearSession(): void {
-    this.state.update(s => ({
+    this.state.update((s) => ({
       ...s,
       user: null,
-      isAuthenticated: false
+      isAuthenticated: false,
     }));
   }
 
   logout(): void {
     this.repository.logout().subscribe(() => {
-      this.state.update(s => ({
+      this.state.update((s) => ({
         ...s,
         user: null,
-        isAuthenticated: false
+        isAuthenticated: false,
       }));
       this.router.navigate(['/login']);
     });

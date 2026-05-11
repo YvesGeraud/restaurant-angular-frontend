@@ -2,10 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { IniciarPagoPayload, IniciarPagoResponse, Reservacion, ReservacionBase } from '../models/reservacion.model';
+import {
+  IniciarPagoPayload,
+  IniciarPagoResponse,
+  Reservacion,
+  ReservacionBase,
+} from '../models/reservacion.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReservacionService {
   private http = inject(HttpClient);

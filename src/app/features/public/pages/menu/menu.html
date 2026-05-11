@@ -1,74 +1,119 @@
 <!-- Hero Section -->
-<div class="hero-menu py-5 mb-5 text-center">
+<div class="hero-menu py-5 mb-5 text-center animate-fade-in">
   <div class="container py-4">
-    <h1 class="display-4 fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: #d4af37;">Nuestro Menú</h1>
+    <h1
+      class="display-4 fw-bold mb-3"
+      style="font-family: 'Playfair Display', serif; color: #d4af37"
+    >
+      Nuestro Menú
+    </h1>
     <p class="lead mb-0 text-white-50">Descubre los sabores que tenemos preparados para ti hoy.</p>
   </div>
 </div>
 
 <div class="container pb-5">
   <!-- Error State -->
-  <div *ngIf="error()" class="alert alert-danger shadow-sm border-0 d-flex align-items-center" role="alert">
-    <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i> 
-    <div>{{ error() }}</div>
-  </div>
+  @if (error()) {
+    <div
+      class="alert alert-danger shadow-sm border-0 d-flex align-items-center animate-fade-in"
+      role="alert"
+    >
+      <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+      <div>{{ error() }}</div>
+    </div>
+  }
 
   <!-- Loading State -->
-  <div *ngIf="loading()" class="text-center py-5">
-    <div class="spinner-grow" style="width: 3rem; height: 3rem; color: #d4af37;" role="status">
-      <span class="visually-hidden">Cargando menú...</span>
-    </div>
-    <p class="mt-3 text-white-50">Preparando el menú...</p>
-  </div>
-
-  <!-- Menu Content -->
-  <ng-container *ngIf="!loading() && !error()">
-    
-    <!-- Category Filter -->
-    <div class="d-flex justify-content-center mb-5 overflow-auto pb-2">
-      <div class="d-flex gap-2" role="group" aria-label="Filtro de categorías">
-        <button *ngFor="let cat of categorias()" 
-                type="button" 
-                class="btn rounded-pill px-4 py-2 btn-filter" 
-                [class.active-filter]="categoriaSeleccionada() === cat"
-                (click)="setCategoria(cat)">
-          {{ cat }}
-        </button>
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-grow" style="width: 3rem; height: 3rem; color: #d4af37" role="status">
+        <span class="visually-hidden">Cargando menú...</span>
       </div>
+      <p class="mt-3 text-white-50">Preparando el menú...</p>
     </div>
-
-    <!-- Empty State -->
-    <div *ngIf="platillosFiltrados().length === 0" class="text-center py-5 text-muted">
-      <i class="bi bi-cup-straw display-1 mb-3 text-light"></i>
-      <h3>Sin resultados</h3>
-      <p>No tenemos platillos en esta categoría por el momento.</p>
-    </div>
-
-    <!-- Grid -->
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <div class="col" *ngFor="let p of platillosFiltrados()">
-        <div class="card card-menu h-100 rounded-4 overflow-hidden">
-          <div class="position-relative bg-dark" style="height: 220px;">
-            <img *ngIf="p.imagenUrl" [src]="p.imagenUrl" class="w-100 h-100 object-fit-cover" [alt]="p.nombre">
-            <div *ngIf="!p.imagenUrl" class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #1a1a1a;">
-              <i class="bi bi-image fs-1 opacity-25 text-white"></i>
-            </div>
-            <span class="position-absolute top-0 end-0 badge price-badge m-3 fs-6 rounded-pill shadow">
-              {{ p.precio | currency }}
-            </span>
-          </div>
-          <div class="card-body d-flex flex-column p-4">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <h5 class="card-title fw-bold mb-0 text-white" style="font-family: 'Playfair Display', serif;">{{ p.nombre }}</h5>
-            </div>
-            <span class="badge category-badge mb-3 align-self-start px-3 py-2">{{ p.categoria.nombre }}</span>
-            <p class="card-text text-white-50 small flex-grow-1" style="line-height: 1.6;">{{ p.descripcion || 'Sin descripción detallada.' }}</p>
-            <button class="btn btn-order w-100 mt-3 rounded-pill fw-medium py-2">
-              <i class="bi bi-cart-plus me-2"></i>Ordenar
+  } @else if (!error()) {
+    <!-- Menu Content -->
+    <div class="animate-fade-in">
+      <!-- Category Filter -->
+      <div class="d-flex justify-content-center mb-5 overflow-auto pb-2 scrollbar-hidden">
+        <div class="d-flex gap-2" role="group" aria-label="Filtro de categorías">
+          @for (cat of categorias(); track cat) {
+            <button
+              type="button"
+              class="btn rounded-pill px-4 py-2 btn-filter transition-all shadow-sm"
+              [class.active-filter]="categoriaSeleccionada() === cat"
+              (click)="setCategoria(cat)"
+            >
+              {{ cat }}
             </button>
-          </div>
+          }
         </div>
       </div>
+
+      <!-- Grid -->
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @for (p of platillosFiltrados(); track p.id) {
+          <div class="col animate-slide-up">
+            <div class="card card-menu h-100 rounded-4 overflow-hidden border-0 shadow-sm">
+              <div class="position-relative bg-dark overflow-hidden" style="height: 220px">
+                @if (p.imagenUrl) {
+                  <img
+                    [src]="p.imagenUrl"
+                    class="w-100 h-100 object-fit-cover transition-all menu-img"
+                    [alt]="p.nombre"
+                  />
+                } @else {
+                  <div
+                    class="w-100 h-100 d-flex align-items-center justify-content-center"
+                    style="background-color: #1a1a1a"
+                  >
+                    <i class="bi bi-image fs-1 opacity-25 text-white"></i>
+                  </div>
+                }
+                <span
+                  class="position-absolute top-0 end-0 badge price-badge m-3 fs-6 rounded-pill shadow-lg"
+                >
+                  {{ p.precio | currency: 'USD' }}
+                </span>
+              </div>
+              <div class="card-body d-flex flex-column p-4">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h5
+                    class="card-title fw-bold mb-0 text-white"
+                    style="font-family: 'Playfair Display', serif"
+                  >
+                    {{ p.nombre }}
+                  </h5>
+                </div>
+                <span
+                  class="badge category-badge mb-3 align-self-start px-3 py-2 text-uppercase tracking-wider small"
+                  >{{ p.categoria.nombre }}</span
+                >
+                <p class="card-text text-white-50 small flex-grow-1" style="line-height: 1.6">
+                  {{ p.descripcion || 'Sin descripción detallada disponible en este momento.' }}
+                </p>
+                <button
+                  type="button"
+                  class="btn btn-order w-100 mt-3 rounded-pill fw-bold py-2 shadow-sm transition-all"
+                >
+                  <i class="bi bi-cart-plus me-2"></i>Ordenar Ahora
+                </button>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <!-- Empty State -->
+          <div
+            class="col-12 text-center py-5 text-muted bg-white bg-opacity-5 rounded-4 animate-fade-in border border-white border-opacity-10"
+          >
+            <i class="bi bi-cup-straw display-1 mb-3 text-light-gray opacity-25 d-block"></i>
+            <h3 class="fw-bold text-white">Sin resultados</h3>
+            <p class="text-white-50">
+              No tenemos platillos en esta categoría por el momento. ¡Intenta con otra!
+            </p>
+          </div>
+        }
+      </div>
     </div>
-  </ng-container>
+  }
 </div>

@@ -8,17 +8,17 @@ import { AuthStore } from '@core/auth/auth.store';
  */
 @Directive({
   selector: '[appHasPermission]',
-  standalone: true
+  standalone: true,
 })
 export class HasPermissionDirective {
-  private readonly templateRef = inject(TemplateRef<any>);
+  private readonly templateRef = inject(TemplateRef<unknown>);
   private readonly viewContainer = inject(ViewContainerRef);
   private readonly authStore = inject(AuthStore);
 
   private permissions: string | string[] = [];
   private hasView = false;
 
-  @Input('appHasPermission') set appHasPermission(val: string | string[]) {
+  @Input() set appHasPermission(val: string | string[]) {
     this.permissions = val;
     this.updateView();
   }

@@ -4,8 +4,12 @@ import { Observable, map } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Categoria } from './categoria.model';
 
+interface CategoriasApiResponse {
+  datos: Categoria[];
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoriasService {
   private readonly apiUrl = `${environment.apiUrl}/categorias`;
@@ -13,19 +17,19 @@ export class CategoriasService {
 
   getCategorias(estado?: boolean): Observable<Categoria[]> {
     let params = new HttpParams();
-    params = params.set('limite', '100'); 
+    params = params.set('limite', '100');
     if (estado !== undefined) {
       params = params.set('estado', estado ? 'true' : 'false');
     }
 
-    return this.http.get<any>(this.apiUrl, { params }).pipe(
-      map(response => {
+    return this.http.get<CategoriasApiResponse>(this.apiUrl, { params }).pipe(
+      map((response) => {
         const datos = response.datos || [];
-        return datos.map((c: any) => ({
+        return datos.map((c) => ({
           ...c,
-          id: c.id || c.id_ct_categoria
+          id: c.id || c.id_ct_categoria || 0,
         }));
-      })
+      }),
     );
   }
 }

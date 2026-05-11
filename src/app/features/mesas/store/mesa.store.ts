@@ -1,10 +1,18 @@
 import { Injectable, signal, computed, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, finalize, Subject, switchMap, EMPTY, debounceTime, tap, distinctUntilChanged } from 'rxjs';
+import {
+  catchError,
+  finalize,
+  Subject,
+  switchMap,
+  EMPTY,
+  debounceTime,
+  tap,
+  distinctUntilChanged,
+} from 'rxjs';
 import { Mesa, MesaFormData } from '../models/mesa.model';
 import { MesasService } from '../services/mesas.service';
 import { NotificationService } from '@core/services/notification.service';
-import { ResultadoBatch } from '@shared/models/batch_result.model';
 
 /**
  * PARÁMETROS DE FILTRADO
@@ -23,12 +31,12 @@ export interface FiltrosMesas {
  * Define la estructura de los datos que el Store gestiona de forma reactiva.
  */
 interface MesasState {
-  mesas: Mesa[];        // Lista actual de mesas cargadas
-  loading: boolean;             // Indicador de carga activa
-  error: string | null;         // Mensaje de error si ocurre un fallo
-  filtros: FiltrosMesas;    // Estado actual de los filtros aplicados
-  totalPaginas: number;         // Total de páginas devueltas por el API
-  totalRegistros: number;       // Total de registros que coinciden con el filtro
+  mesas: Mesa[]; // Lista actual de mesas cargadas
+  loading: boolean; // Indicador de carga activa
+  error: string | null; // Mensaje de error si ocurre un fallo
+  filtros: FiltrosMesas; // Estado actual de los filtros aplicados
+  totalPaginas: number; // Total de páginas devueltas por el API
+  totalRegistros: number; // Total de registros que coinciden con el filtro
 }
 
 /**
@@ -45,17 +53,17 @@ export class MesasStore {
   // ==========================================
   //            GATILLOS REACTIVOS
   // ==========================================
-  
+
   /** Disparador para carga manual o refresco de datos */
   private readonly loadTrigger$ = new Subject<void>();
-  
+
   /** Disparador para cambios en los filtros (búsqueda, paginación, etc.) */
   private readonly filterTrigger$ = new Subject<Partial<FiltrosMesas>>();
 
   // ==========================================
   //            ESTADO PRIVADO (SIGNAL)
   // ==========================================
-  
+
   private readonly state = signal<MesasState>({
     mesas: [],
     loading: false,
@@ -63,21 +71,21 @@ export class MesasStore {
     filtros: {
       busqueda: '',
       pagina: 1,
-      limite: 5 // Cantidad de elementos por página
+      limite: 5, // Cantidad de elementos por página
     },
     totalPaginas: 1,
-    totalRegistros: 0
+    totalRegistros: 0,
   });
 
   // ==========================================
   //            SELECTORES PÚBLICOS
   // ==========================================
-  
+
   readonly mesas = computed(() => this.state().mesas);
-  readonly loading   = computed(() => this.state().loading);
-  readonly error     = computed(() => this.state().error);
-  readonly filtros   = computed(() => this.state().filtros);
-  readonly count     = computed(() => this.state().totalRegistros);
+  readonly loading = computed(() => this.state().loading);
+  readonly error = computed(() => this.state().error);
+  readonly filtros = computed(() => this.state().filtros);
+  readonly count = computed(() => this.state().totalRegistros);
   readonly totalPaginas = computed(() => this.state().totalPaginas);
   readonly paginaActual = computed(() => this.state().filtros.pagina);
 
@@ -90,32 +98,35 @@ export class MesasStore {
    */
   private initializeEffects(): void {
     // 1. Efecto: Carga manual inmediata
-    this.loadTrigger$.pipe(
-      tap(() => this.state.update(s => ({ ...s, loading: true, error: null }))),
-      switchMap(() => this.getMesasObservable()),
-      takeUntilDestroyed()
-    ).subscribe();
+    this.loadTrigger$
+      .pipe(
+        tap(() => this.state.update((s) => ({ ...s, loading: true, error: null }))),
+        switchMap(() => this.getMesasObservable()),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
 
     // 2. Efecto: Búsqueda reactiva con Debounce (evita llamadas excesivas al API)
-    this.filterTrigger$.pipe(
-      debounceTime(400),
-      distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
-      tap((filtrosNuevos) => {
-        this.state.update(s => ({ 
-          ...s, 
-          loading: true, 
-          error: null,
-          filtros: { 
-            ...s.filtros, 
-            ...filtrosNuevos,
-            // Reseteamos a página 1 si cambió la búsqueda, a menos que se especifique otra
-            pagina: filtrosNuevos.pagina ?? 1 
-          } 
-        }));
-      }),
-      switchMap(() => this.getMesasObservable()),
-      takeUntilDestroyed()
-    ).subscribe();
+    this.filterTrigger$
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+        tap((filtrosNuevos) => {
+          this.state.update((s) => ({
+            ...s,
+            loading: true,
+            error: null,
+            filtros: {
+              ...s.filtros,
+              ...filtrosNuevos,
+              pagina: filtrosNuevos.pagina ?? 1,
+            },
+          }));
+        }),
+        switchMap(() => this.getMesasObservable()),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
   }
 
   /**
@@ -123,19 +134,21 @@ export class MesasStore {
    */
   private getMesasObservable() {
     return this.mesasService.getMesas(this.state().filtros).pipe(
-      tap(res => this.state.update(s => ({ 
-        ...s, 
-        mesas: res.datos, 
-        totalPaginas: res.totalPaginas,
-        totalRegistros: res.totalRegistros,
-        loading: false 
-      }))),
-      catchError(err => {
+      tap((res) =>
+        this.state.update((s) => ({
+          ...s,
+          mesas: res.datos,
+          totalPaginas: res.totalPaginas,
+          totalRegistros: res.totalRegistros,
+          loading: false,
+        })),
+      ),
+      catchError(() => {
         const msg = 'Error al sincronizar las mesas';
-        this.state.update(s => ({ ...s, error: msg, loading: false }));
+        this.state.update((s) => ({ ...s, error: msg, loading: false }));
         this.notifications.error(msg);
         return EMPTY;
-      })
+      }),
     );
   }
 
@@ -143,130 +156,121 @@ export class MesasStore {
   //            ACCIONES (MÉTODOS)
   // ==========================================
 
-  /**
-   * Ejecuta una recarga de los datos actuales.
-   */
   loadMesas(): void {
     this.loadTrigger$.next();
   }
 
-  /**
-   * Actualiza los filtros de búsqueda y dispara la recarga.
-   */
   applyFilter(filtros: Partial<FiltrosMesas>): void {
     this.filterTrigger$.next(filtros);
   }
 
-  /**
-   * Crea una nueva mesa y lo añade al estado local.
-   */
   createMesa(data: MesaFormData): void {
-    this.state.update(s => ({ ...s, loading: true, error: null }));
+    this.state.update((s) => ({ ...s, loading: true, error: null }));
 
-    this.mesasService.createMesa(data).pipe(
-      catchError(err => {
-        this.notifications.error('No se pudo crear la mesa');
-        throw err;
-      }),
-      finalize(() => this.state.update(s => ({ ...s, loading: false }))),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(nuevo => {
-      this.state.update(s => ({ ...s, mesas: [...s.mesas, nuevo] }));
-      this.notifications.success(`"${nuevo.id}" ha sido añadida`);
-    });
+    this.mesasService
+      .createMesa(data)
+      .pipe(
+        catchError((err) => {
+          this.notifications.error('No se pudo crear la mesa');
+          throw err;
+        }),
+        finalize(() => this.state.update((s) => ({ ...s, loading: false }))),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((nuevo) => {
+        this.state.update((s) => ({ ...s, mesas: [...s.mesas, nuevo] }));
+        this.notifications.success(`"${nuevo.id}" ha sido añadida`);
+      });
   }
 
-  /**
-   * Procesa una carga masiva de mesas.
-   */
   createMesasBatch(data: MesaFormData[]): void {
-    this.state.update(s => ({ ...s, loading: true, error: null }));
-    this.mesasService.createMesasBatch(data).pipe(
-      catchError(err => {
-        this.notifications.error('Error al procesar la carga masiva');
-        throw err;
-      }),
-      finalize(() => this.state.update(s => ({ ...s, loading: false }))),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(resultado => {
-      this.notifications.success(
-        `Lote procesado: ${resultado.exitosos} de ${resultado.procesados} mesas creadas.`,
-        'Carga Masiva Exitosa'
-      );
-      this.loadMesas();
-    });
+    this.state.update((s) => ({ ...s, loading: true, error: null }));
+    this.mesasService
+      .createMesasBatch(data)
+      .pipe(
+        catchError((err) => {
+          this.notifications.error('Error al procesar la carga masiva');
+          throw err;
+        }),
+        finalize(() => this.state.update((s) => ({ ...s, loading: false }))),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((resultado) => {
+        this.notifications.success(
+          `Lote procesado: ${resultado.exitosos} de ${resultado.procesados} mesas creadas.`,
+          'Carga Masiva Exitosa',
+        );
+        this.loadMesas();
+      });
   }
 
-  /**
-   * Actualiza una mesa existente y refresca la lista local.
-   */
   updateMesa(id: number, data: MesaFormData): void {
-    this.state.update(s => ({ ...s, loading: true, error: null }));
+    this.state.update((s) => ({ ...s, loading: true, error: null }));
 
-    this.mesasService.updateMesa(id, data).pipe(
-      catchError(err => {
-        this.notifications.error('Error al guardar los cambios');
-        throw err;
-      }),
-      finalize(() => this.state.update(s => ({ ...s, loading: false }))),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(actualizado => {
-      this.state.update(s => ({
-        ...s,
-        mesas: s.mesas.map(p => p.id === id ? actualizado : p),
-      }));
-      this.notifications.success('Cambios guardados correctamente');
-    });
+    this.mesasService
+      .updateMesa(id, data)
+      .pipe(
+        catchError((err) => {
+          this.notifications.error('Error al guardar los cambios');
+          throw err;
+        }),
+        finalize(() => this.state.update((s) => ({ ...s, loading: false }))),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((actualizado) => {
+        this.state.update((s) => ({
+          ...s,
+          mesas: s.mesas.map((p) => (p.id === id ? actualizado : p)),
+        }));
+        this.notifications.success('Cambios guardados correctamente');
+      });
   }
 
-  /**
-   * Reactiva una mesa desactivada.
-   */
   activateMesa(id: number): void {
-    this.state.update(s => ({ ...s, loading: true, error: null }));
+    this.state.update((s) => ({ ...s, loading: true, error: null }));
 
-    this.mesasService.updateMesa(id, { estado: true } as any).pipe(
-      catchError(err => {
-        this.notifications.error('Error al reactivar la mesa');
-        throw err;
-      }),
-      finalize(() => this.state.update(s => ({ ...s, loading: false }))),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(actualizado => {
-      this.state.update(s => ({
-        ...s,
-        mesas: s.mesas.map(p => p.id === id ? actualizado : p),
-      }));
-      this.notifications.success('Mesa reactivada correctamente');
-    });
+    this.mesasService
+      .updateMesa(id, { estado: true } as Partial<MesaFormData>)
+      .pipe(
+        catchError((err) => {
+          this.notifications.error('Error al reactivar la mesa');
+          throw err;
+        }),
+        finalize(() => this.state.update((s) => ({ ...s, loading: false }))),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((actualizado) => {
+        this.state.update((s) => ({
+          ...s,
+          mesas: s.mesas.map((p) => (p.id === id ? actualizado : p)),
+        }));
+        this.notifications.success('Mesa reactivada correctamente');
+      });
   }
 
-  /**
-   * Elimina una mesa aplicando una actualización optimista (se quita de la UI antes de la confirmación del API).
-   */
   deleteMesa(id: number): void {
     const original = this.state().mesas;
-    const item = original.find(p => p.id === id);
-    
+    const item = original.find((p) => p.id === id);
+
     if (!item) return;
 
-    // Actualización optimista: Desactivar la mesa (soft-delete)
-    this.state.update(s => ({
+    this.state.update((s) => ({
       ...s,
-      mesas: s.mesas.map(m => m.id === id ? { ...m, estado: false } : m),
+      mesas: s.mesas.map((m) => (m.id === id ? { ...m, estado: false } : m)),
     }));
 
-    this.mesasService.deleteMesa(id).pipe(
-      catchError(err => {
-        // Rollback
-        this.state.update(s => ({ ...s, mesas: original }));
-        this.notifications.error('Error al intentar desactivar la mesa');
-        throw err;
-      }),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(() => {
-      this.notifications.success(`Mesa "${item.id}" puesta fuera de servicio`);
-    });
+    this.mesasService
+      .deleteMesa(id)
+      .pipe(
+        catchError((err) => {
+          this.state.update((s) => ({ ...s, mesas: original }));
+          this.notifications.error('Error al intentar desactivar la mesa');
+          throw err;
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.notifications.success(`Mesa "${item.id}" puesta fuera de servicio`);
+      });
   }
 }
-

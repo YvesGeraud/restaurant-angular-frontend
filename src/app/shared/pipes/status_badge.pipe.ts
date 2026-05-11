@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'statusBadge',
-  standalone: true
+  standalone: true,
 })
 export class StatusBadgePipe implements PipeTransform {
   /**
@@ -18,11 +18,16 @@ export class StatusBadgePipe implements PipeTransform {
     if (typeof value === 'string') {
       const status = value.toLowerCase();
       switch (status) {
-        case 'libre': return 'bg-success-subtle text-success border border-success';
-        case 'ocupada': return 'bg-danger-subtle text-danger border border-danger';
-        case 'reservada': return 'bg-warning-subtle text-warning border border-warning';
-        case 'inactiva': return 'bg-secondary-subtle text-secondary border border-secondary';
-        default: return 'bg-secondary-subtle text-secondary border border-secondary';
+        case 'libre':
+          return 'bg-success-subtle text-success border border-success';
+        case 'ocupada':
+          return 'bg-danger-subtle text-danger border border-danger';
+        case 'reservada':
+          return 'bg-warning-subtle text-warning border border-warning';
+        case 'inactiva':
+          return 'bg-secondary-subtle text-secondary border border-secondary';
+        default:
+          return 'bg-secondary-subtle text-secondary border border-secondary';
       }
     }
 

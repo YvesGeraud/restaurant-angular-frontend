@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
   templateUrl: './mesas_batch.component.html',
   styleUrl: './mesas_batch.component.scss',
 })
-export class MesasBatchComponent {
-
-}
+export class MesasBatchComponent {}

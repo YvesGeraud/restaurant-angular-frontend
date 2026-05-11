@@ -10,7 +10,7 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ModalComponent],
   templateUrl: './platillo_modal.component.html',
-  styleUrl: './platillo_modal.component.scss'
+  styleUrl: './platillo_modal.component.scss',
 })
 export class PlatilloModalComponent implements OnInit, OnChanges {
   private readonly fb = inject(FormBuilder);
@@ -18,12 +18,12 @@ export class PlatilloModalComponent implements OnInit, OnChanges {
 
   /** Estado de visibilidad (controlado por el padre) */
   readonly isOpen = input.required<boolean>();
-  
+
   /** Platillo a editar (null si es creación) */
   readonly platillo = input<Platillo | null>(null);
 
   /** Eventos */
-  readonly close = output<void>();
+  readonly modalClose = output<void>();
   readonly save = output<PlatilloFormData>();
 
   form: FormGroup = this.initForm();
@@ -39,7 +39,7 @@ export class PlatilloModalComponent implements OnInit, OnChanges {
   }
 
   onClose(): void {
-    this.close.emit();
+    this.modalClose.emit();
   }
 
   onSave(): void {
@@ -57,7 +57,7 @@ export class PlatilloModalComponent implements OnInit, OnChanges {
       descripcion: ['', [Validators.maxLength(500)]],
       precio: [0, [Validators.required, Validators.min(0.01)]],
       imagenUrl: [''],
-      estado: [true]
+      estado: [true],
     });
   }
 
@@ -69,7 +69,7 @@ export class PlatilloModalComponent implements OnInit, OnChanges {
         descripcion: platillo.descripcion,
         precio: platillo.precio,
         imagenUrl: platillo.imagenUrl,
-        estado: platillo.estado
+        estado: platillo.estado,
       });
     } else {
       this.form.reset({
@@ -78,7 +78,7 @@ export class PlatilloModalComponent implements OnInit, OnChanges {
         descripcion: '',
         precio: 0,
         imagenUrl: '',
-        estado: true
+        estado: true,
       });
     }
   }

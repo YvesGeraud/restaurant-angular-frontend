@@ -1,21 +1,21 @@
 import { Injectable, signal } from '@angular/core';
-import { loadStripe, Stripe, StripeElements, StripePaymentElementOptions } from '@stripe/stripe-js';
+import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StripeService {
   // Manejamos la instancia de Stripe usando Signals para reactividad
   private stripeInstance = signal<Stripe | null>(null);
-  
+
   // Guardamos la promesa de inicialización para evitar múltiples cargas
   private stripePromise: Promise<Stripe | null>;
 
   constructor() {
     // Inicializamos Stripe de inmediato al crear el servicio
     this.stripePromise = loadStripe(environment.stripePublicKey);
-    this.stripePromise.then(stripe => {
+    this.stripePromise.then((stripe) => {
       if (stripe) {
         this.stripeInstance.set(stripe);
       } else {
@@ -50,11 +50,11 @@ export class StripeService {
           colorBackground: '#1a1a1a', // Dark grey
           colorText: '#ffffff',
           colorDanger: '#ef4444',
-          fontFamily: '"Inter", system-ui, sans-serif',
+          fontFamily: '"Outfit", system-ui, sans-serif',
           spacingUnit: '4px',
           borderRadius: '8px',
-        }
-      }
+        },
+      },
     });
   }
 }

@@ -7,10 +7,7 @@ import { PlatilloBatchComponent } from './pages/platillo_batch/platillo_batch.co
 export const PLATILLOS_ROUTES: Routes = [
   {
     path: '',
-    providers: [
-      PlatillosService,
-      PlatillosStore,
-    ],
+    providers: [PlatillosService, PlatillosStore],
     children: [
       {
         path: '',
@@ -19,8 +16,7 @@ export const PLATILLOS_ROUTES: Routes = [
       {
         path: 'batch',
         component: PlatilloBatchComponent,
-      }
-    ]
+      },
+    ],
   },
 ];
-

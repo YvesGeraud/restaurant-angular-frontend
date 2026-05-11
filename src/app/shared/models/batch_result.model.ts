@@ -8,5 +8,5 @@ export interface ResultadoBatch {
 export interface ErrorBatch {
   indice: number;
   error: string;
-  dato?: any;
+  dato?: unknown;
 }

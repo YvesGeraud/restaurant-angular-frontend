@@ -1,31 +1,47 @@
-<app-modal [isOpen]="isOpen()" [title]="mesa() ? 'Editar Mesa' : 'Nueva Mesa'" (close)="onClose()">
+<app-modal
+  [isOpen]="isOpen()"
+  [title]="mesa() ? 'Editar Mesa' : 'Nueva Mesa'"
+  (modalClose)="onClose()"
+>
   <form [formGroup]="form" (ngSubmit)="onSave()" class="p-2">
     <!-- Código de la Mesa -->
     <div class="mb-3">
-      <label class="form-label fw-bold">Código / Identificador</label>
-      <input type="text" class="form-control shadow-sm" formControlName="codigo" 
-             placeholder="Ej. Mesa 01, Terraza A, etc."
-             [ngClass]="{'is-invalid': form.get('codigo')?.invalid && form.get('codigo')?.touched}">
+      <label for="mesa_codigo" class="form-label fw-bold">Código / Identificador</label>
+      <input
+        id="mesa_codigo"
+        type="text"
+        class="form-control shadow-sm"
+        formControlName="codigo"
+        placeholder="Ej. Mesa 01, Terraza A, etc."
+        [ngClass]="{ 'is-invalid': form.get('codigo')?.invalid && form.get('codigo')?.touched }"
+      />
       <div class="invalid-feedback">El código es requerido (mínimo 2 caracteres).</div>
     </div>
 
     <!-- Capacidad -->
     <div class="mb-3">
-      <label class="form-label fw-bold">Capacidad (Personas)</label>
+      <label for="mesa_capacidad" class="form-label fw-bold">Capacidad (Personas)</label>
       <div class="input-group shadow-sm">
         <span class="input-group-text"><i class="bi bi-people"></i></span>
-        <input type="number" class="form-control" formControlName="capacidad"
-               [ngClass]="{'is-invalid': form.get('capacidad')?.invalid && form.get('capacidad')?.touched}">
+        <input
+          id="mesa_capacidad"
+          type="number"
+          class="form-control"
+          formControlName="capacidad"
+          [ngClass]="{
+            'is-invalid': form.get('capacidad')?.invalid && form.get('capacidad')?.touched,
+          }"
+        />
       </div>
-      <div class="invalid-feedback d-block" *ngIf="form.get('capacidad')?.invalid && form.get('capacidad')?.touched">
-        La capacidad debe estar entre 1 y 20 personas.
-      </div>
+      @if (form.get('capacidad')?.invalid && form.get('capacidad')?.touched) {
+        <div class="invalid-feedback d-block">La capacidad debe estar entre 1 y 20 personas.</div>
+      }
     </div>
 
     <!-- Estado de Negocio (status) -->
     <div class="mb-3">
-      <label class="form-label fw-bold">Estado de Negocio</label>
-      <select class="form-select shadow-sm" formControlName="status">
+      <label for="mesa_status" class="form-label fw-bold">Estado de Negocio</label>
+      <select id="mesa_status" class="form-select shadow-sm" formControlName="status">
         <option value="libre">Libre</option>
         <option value="ocupada">Ocupada</option>
         <option value="reservada">Reservada</option>
@@ -34,8 +50,8 @@
 
     <!-- Disponibilidad Operativa (estado) -->
     <div class="mb-4">
-      <label class="form-label fw-bold">Disponibilidad</label>
-      <select class="form-select shadow-sm" formControlName="estado">
+      <label for="mesa_estado" class="form-label fw-bold">Disponibilidad</label>
+      <select id="mesa_estado" class="form-select shadow-sm" formControlName="estado">
         <option [value]="true">Activa (Disponible para servicio)</option>
         <option [value]="false">Inactiva (Fuera de servicio / Baja)</option>
       </select>

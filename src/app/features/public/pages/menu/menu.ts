@@ -23,7 +23,7 @@ export class MenuComponent implements OnInit {
     const selected = this.categoriaSeleccionada();
     const all = this.platillos();
     if (selected === 'Todos') return all;
-    return all.filter(p => p.categoria.nombre === selected);
+    return all.filter((p) => p.categoria.nombre === selected);
   });
 
   ngOnInit() {
@@ -36,7 +36,7 @@ export class MenuComponent implements OnInit {
     this.platillosService.getPlatillos({ limite: 100 }).subscribe({
       next: (res) => {
         try {
-          const filtrados = res.datos.filter(p => p.estado);
+          const filtrados = res.datos.filter((p) => p.estado);
           this.platillos.set(filtrados);
           this.extraerCategorias(filtrados);
         } catch (e) {
@@ -49,12 +49,12 @@ export class MenuComponent implements OnInit {
         console.error('Error HTTP o de mapping al cargar menú:', err);
         this.error.set('No pudimos cargar el menú en este momento.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
   private extraerCategorias(datos: Platillo[]) {
-    const cats = new Set(datos.map(p => p.categoria.nombre));
+    const cats = new Set(datos.map((p) => p.categoria.nombre));
     this.categorias.set(['Todos', ...Array.from(cats)]);
   }
 

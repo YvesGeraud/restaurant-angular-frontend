@@ -7,10 +7,7 @@ import { MesasBatchComponent } from './pages/mesas_batch/mesas_batch.component';
 export const MESAS_ROUTES: Routes = [
   {
     path: '',
-    providers: [
-      MesasService,
-      MesasStore,
-    ],
+    providers: [MesasService, MesasStore],
     children: [
       {
         path: '',
@@ -19,8 +16,7 @@ export const MESAS_ROUTES: Routes = [
       {
         path: 'batch',
         component: MesasBatchComponent,
-      }
-    ]
+      },
+    ],
   },
 ];
-

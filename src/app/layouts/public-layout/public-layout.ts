@@ -7,6 +7,4 @@ import { RouterOutlet, RouterModule } from '@angular/router';
   templateUrl: './public-layout.html',
   styleUrl: './public-layout.scss',
 })
-export class PublicLayout {
-
-}
+export class PublicLayout {}

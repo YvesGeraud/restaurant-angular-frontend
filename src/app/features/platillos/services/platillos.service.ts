@@ -2,9 +2,26 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '@environments/environment';
-import { Platillo, PlatilloFormData, PlatilloDTO, PlatilloPayloadDTO } from '../models/platillo.model';
+import {
+  Platillo,
+  PlatilloFormData,
+  PlatilloDTO,
+  PlatilloPayloadDTO,
+} from '../models/platillo.model';
 import { ResultadoBatch } from '@shared/models/batch_result.model';
 import { PaginatedResponse } from '@shared/models/pagination.model';
+
+interface ApiResponse<T> {
+  datos: T;
+  meta?: {
+    pagina: number;
+    totalPaginas: number;
+    totalRegistros: number;
+    porPagina: number;
+  };
+  mensaje?: string;
+  exito: boolean;
+}
 
 /**
  * SERVICIO DE PLATILLOS
@@ -20,11 +37,6 @@ export class PlatillosService {
   //            MAPPERS LOCALES
   // ==========================================
 
-  /**
-   * Transforma un objeto que viene del API (snake_case) a un objeto de dominio (camelCase).
-   * @param dto Datos crudos del API
-   * @returns Objeto tipo Platillo para usar en la UI
-   */
   private mapFromApi(dto: PlatilloDTO): Platillo {
     return {
       id: dto.id_ct_platillo,
@@ -39,13 +51,8 @@ export class PlatillosService {
     };
   }
 
-  /**
-   * Transforma los datos del formulario al formato de envío (payload) que espera el API.
-   * @param data Datos del formulario de Angular
-   * @returns Objeto preparado para ser enviado vía POST/PATCH
-   */
   private mapToApiPayload(data: Partial<PlatilloFormData>): PlatilloPayloadDTO {
-    const payload: any = {};
+    const payload: Partial<PlatilloPayloadDTO> = {};
 
     if (data.idCategoria !== undefined) payload.id_ct_categoria = Number(data.idCategoria);
     if (data.nombre !== undefined) payload.nombre = data.nombre;
@@ -61,83 +68,65 @@ export class PlatillosService {
   //            MÉTODOS DEL API
   // ==========================================
 
-  /**
-   * Obtiene una lista paginada de platillos.
-   * @param filtros Criterios opcionales de búsqueda y paginación
-   * @returns Observable con la respuesta paginada y mapeada
-   */
-  getPlatillos(filtros?: { busqueda?: string; pagina?: number; limite?: number; id_ct_categoria?: number }): Observable<PaginatedResponse<Platillo>> {
+  getPlatillos(filtros?: {
+    busqueda?: string;
+    pagina?: number;
+    limite?: number;
+    id_ct_categoria?: number;
+  }): Observable<PaginatedResponse<Platillo>> {
     let params = {};
     if (filtros) {
-      // Limpiamos los parámetros nulos o indefinidos
       params = Object.fromEntries(
-        Object.entries(filtros).filter(([_, v]) => v != null)
+        Object.entries(filtros).filter(([key, v]) => key !== '' && v != null),
       );
     }
 
-    return this.http.get<any>(this.apiUrl, { params }).pipe(
-      map(response => {
+    return this.http.get<ApiResponse<PlatilloDTO[]>>(this.apiUrl, { params }).pipe(
+      map((response) => {
         const list = response.datos || [];
-        const meta = response.meta || {};
+        const meta = response.meta || {
+          pagina: 1,
+          totalPaginas: 1,
+          totalRegistros: 0,
+          porPagina: 10,
+        };
         return {
-          datos: list.map((dto: PlatilloDTO) => this.mapFromApi(dto)),
+          datos: list.map((dto) => this.mapFromApi(dto)),
           pagina: meta.pagina,
           totalPaginas: meta.totalPaginas,
           totalRegistros: meta.totalRegistros,
-          porPagina: meta.porPagina
+          porPagina: meta.porPagina,
         } as PaginatedResponse<Platillo>;
-      })
+      }),
     );
   }
 
-  /**
-   * Obtiene el detalle de un platillo específico por su ID.
-   * @param id Identificador único del platillo
-   */
   getPlatilloById(id: number): Observable<Platillo> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-      map(response => this.mapFromApi(response.datos))
-    );
+    return this.http
+      .get<ApiResponse<PlatilloDTO>>(`${this.apiUrl}/${id}`)
+      .pipe(map((response) => this.mapFromApi(response.datos)));
   }
 
-  /**
-   * Crea un nuevo platillo en el sistema.
-   * @param data Datos provenientes del formulario
-   */
   createPlatillo(data: PlatilloFormData): Observable<Platillo> {
-    return this.http.post<any>(this.apiUrl, this.mapToApiPayload(data)).pipe(
-      map(response => this.mapFromApi(response.datos))
-    );
+    return this.http
+      .post<ApiResponse<PlatilloDTO>>(this.apiUrl, this.mapToApiPayload(data))
+      .pipe(map((response) => this.mapFromApi(response.datos)));
   }
 
-  /**
-   * Crea múltiples platillos de forma masiva.
-   * @param data Arreglo de datos de formularios
-   */
   createPlatillosBatch(data: PlatilloFormData[]): Observable<ResultadoBatch> {
-    const payloads = data.map(item => this.mapToApiPayload(item));
-    return this.http.post<any>(`${this.apiUrl}/batch`, payloads).pipe(
-      map(response => response.datos as ResultadoBatch)
-    );
+    const payloads = data.map((item) => this.mapToApiPayload(item));
+    return this.http
+      .post<ApiResponse<ResultadoBatch>>(`${this.apiUrl}/batch`, payloads)
+      .pipe(map((response) => response.datos));
   }
 
-  /**
-   * Actualiza la información de un platillo existente.
-   * @param id ID del platillo a modificar
-   * @param data Nuevos datos (parciales o totales)
-   */
   updatePlatillo(id: number, data: Partial<PlatilloFormData>): Observable<Platillo> {
-    return this.http.patch<any>(`${this.apiUrl}/${id}`, this.mapToApiPayload(data)).pipe(
-      map(response => this.mapFromApi(response.datos))
-    );
+    return this.http
+      .patch<ApiResponse<PlatilloDTO>>(`${this.apiUrl}/${id}`, this.mapToApiPayload(data))
+      .pipe(map((response) => this.mapFromApi(response.datos)));
   }
 
-  /**
-   * Elimina un platillo del sistema.
-   * @param id ID del platillo a eliminar
-   */
   deletePlatillo(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
-

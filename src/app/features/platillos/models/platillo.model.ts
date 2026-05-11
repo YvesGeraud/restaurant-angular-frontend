@@ -63,4 +63,3 @@ export interface PlatilloPayloadDTO {
   imagen_url?: string | null;
   estado: boolean;
 }
-

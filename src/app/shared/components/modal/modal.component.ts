@@ -9,32 +9,32 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './modal.component.html',
-  styleUrl: './modal.component.scss'
+  styleUrl: './modal.component.scss',
 })
 export class ModalComponent {
   /** Estado de visibilidad */
   readonly isOpen = input.required<boolean>();
-  
+
   /** Título del modal */
   readonly title = input<string>('');
-  
+
   /** Ancho máximo (ej: '500px') */
   readonly maxWidth = input<string>('600px');
-  
+
   /** Indica si tiene botón de cierre automático en backdrop */
   readonly closeOnBackdrop = input<boolean>(true);
-  
+
   /** Indica si se proyecta un footer */
   readonly hasFooter = input<boolean>(true);
 
   /** Evento de cierre */
-  readonly close = output<void>();
+  readonly modalClose = output<void>();
 
   onClose(): void {
-    this.close.emit();
+    this.modalClose.emit();
   }
 
-  onBackdropClick(event: MouseEvent): void {
+  onBackdropClick(): void {
     if (this.closeOnBackdrop()) {
       this.onClose();
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -22,7 +22,7 @@ import { NotificationService } from '@core/services/notification.service';
     RouterLink,
     PlatilloModalComponent,
     PaginatorComponent,
-    HasPermissionDirective
+    HasPermissionDirective,
   ],
   templateUrl: './platillos.component.html',
   styleUrl: './platillos.component.scss',
@@ -31,8 +31,8 @@ export class PlatillosComponent implements OnInit {
   protected readonly store = inject(PlatillosStore);
   private readonly notifications = inject(NotificationService);
 
-  isModalOpen = false;
-  selectedPlatillo: Platillo | null = null;
+  isModalOpen = signal(false);
+  selectedPlatillo = signal<Platillo | null>(null);
 
   ngOnInit(): void {
     if (this.store.platillos().length === 0) {
@@ -40,8 +40,9 @@ export class PlatillosComponent implements OnInit {
     }
   }
 
-  onSearch(termino: string): void {
-    this.store.applyFilter({ busqueda: termino });
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.store.applyFilter({ busqueda: input.value });
   }
 
   onPageChange(pagina: number): void {
@@ -49,25 +50,27 @@ export class PlatillosComponent implements OnInit {
   }
 
   onNuevoPlatillo(): void {
-    this.selectedPlatillo = null;
-    this.isModalOpen = true;
+    this.selectedPlatillo.set(null);
+    this.isModalOpen.set(true);
   }
 
   onEditarPlatillo(platillo: Platillo): void {
-    this.selectedPlatillo = { ...platillo };
-    this.isModalOpen = true;
+    this.selectedPlatillo.set({ ...platillo });
+    this.isModalOpen.set(true);
   }
 
   onEliminarPlatillo(platillo: Platillo): void {
-    this.notifications.confirm(
-      `¿Eliminar "${platillo.nombre}"? Esta acción no se puede deshacer.`,
-      'Confirmar Eliminación',
-      'Sí, eliminar'
-    ).subscribe(confirmado => {
-      if (confirmado) {
-        this.store.deletePlatillo(platillo.id);
-      }
-    });
+    this.notifications
+      .confirm(
+        `¿Eliminar "${platillo.nombre}"? Esta acción no se puede deshacer.`,
+        'Confirmar Eliminación',
+        'Sí, eliminar',
+      )
+      .subscribe((confirmado) => {
+        if (confirmado) {
+          this.store.deletePlatillo(platillo.id);
+        }
+      });
   }
 
   onReactivarPlatillo(platillo: Platillo): void {
@@ -75,8 +78,9 @@ export class PlatillosComponent implements OnInit {
   }
 
   onGuardarPlatillo(data: PlatilloFormData): void {
-    if (this.selectedPlatillo) {
-      this.store.updatePlatillo(this.selectedPlatillo.id, data);
+    const platillo = this.selectedPlatillo();
+    if (platillo) {
+      this.store.updatePlatillo(platillo.id, data);
     } else {
       this.store.createPlatillo(data);
     }
@@ -84,7 +88,7 @@ export class PlatillosComponent implements OnInit {
   }
 
   onCerrarModal(): void {
-    this.isModalOpen = false;
-    this.selectedPlatillo = null;
+    this.isModalOpen.set(false);
+    this.selectedPlatillo.set(null);
   }
 }
