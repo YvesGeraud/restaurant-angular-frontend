@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { User, AuthCredentials } from './auth.model';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { NotificationService } from '../services/notification.service';
 
 export interface AuthState {
   user: User | null;
@@ -15,6 +16,7 @@ export interface AuthState {
 export class AuthStore {
   private readonly repository = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly notification = inject(NotificationService);
 
   // ── Estado ──────────────────────────────────────────────────────────────────
   private readonly state = signal<AuthState>({
@@ -77,12 +79,18 @@ export class AuthStore {
           this.router.navigate(['/admin/platillos']);
         }),
         catchError((err) => {
-          // El error se maneja en el componente (vía NotificationService posiblemente)
-          throw err;
+          const mensaje = err.error?.mensaje || 'Credenciales inválidas';
+          this.notification.error(mensaje);
+          return of(null);
         }),
         finalize(() => this.state.update((s) => ({ ...s, loading: false }))),
       )
-      .subscribe();
+      .subscribe({
+        error: (err) => {
+          // Evitamos que el error suba a nivel global y rompa la app/pruebas
+          console.error('Error de autenticación capturado:', err);
+        },
+      });
   }
 
   /** Limpiar el estado de sesión sin llamar al backend (usado por el interceptor) */

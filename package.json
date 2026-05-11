@@ -7,6 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:unit": "ng test --watch=false",
+    "test:e2e": "cypress run",
+    "cypress:open": "cypress open",
     "type-check": "tsc --noEmit",
     "lint": "ng lint",
     "format": "prettier --write \"src/**/*.{ts,html,scss,json}\""
@@ -50,6 +53,7 @@
     "@eslint/js": "^10.0.1",
     "@types/animejs": "^3.1.13",
     "angular-eslint": "21.3.1",
+    "cypress": "^15.14.2",
     "eslint": "^10.0.3",
     "jsdom": "^27.1.0",
     "prettier": "^3.8.3",
