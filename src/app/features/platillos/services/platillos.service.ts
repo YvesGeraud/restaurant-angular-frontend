@@ -28,7 +28,9 @@ interface ApiResponse<T> {
  * Encargado de la comunicación con el API para todas las operaciones CRUD de platillos.
  * Realiza el mapeo entre los modelos del API (DTO) y los modelos de la aplicación (Dominio/Forms).
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PlatillosService {
   private readonly apiUrl = `${environment.apiUrl}/platillos`;
   private readonly http = inject(HttpClient);

@@ -44,7 +44,9 @@ interface MesasState {
  * Centraliza el estado de las mesas y gestiona los efectos secundarios (llamadas al API).
  * Utiliza Angular Signals para una reactividad eficiente en la UI.
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class MesasStore {
   private readonly mesasService = inject(MesasService);
   private readonly notifications = inject(NotificationService);

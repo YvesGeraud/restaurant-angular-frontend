@@ -43,7 +43,9 @@ interface PlatillosState {
  * Centraliza el estado de los platillos y gestiona los efectos secundarios (llamadas al API).
  * Utiliza Angular Signals para una reactividad eficiente en la UI.
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PlatillosStore {
   private readonly platillosService = inject(PlatillosService);
   private readonly notifications = inject(NotificationService);

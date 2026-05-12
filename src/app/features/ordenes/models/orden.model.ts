@@ -6,6 +6,8 @@ export type EstadoOrden =
   | 'PAGADA'
   | 'CANCELADO';
 
+import { Platillo } from '../../platillos/models/platillo.model';
+
 export interface DetalleOrden {
   id_ct_platillo: number;
   cantidad: number;
@@ -16,6 +18,10 @@ export interface DetalleOrden {
     nombre: string;
     imagen_url?: string;
   };
+}
+
+export interface ItemCarrito extends Platillo {
+  cantidad: number;
 }
 
 export interface Orden {

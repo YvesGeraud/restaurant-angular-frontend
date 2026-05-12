@@ -1,0 +1,37 @@
+<div
+  class="platillo-card h-100 p-3 rounded-4 border transition-all hover-shadow"
+  (click)="onClick.emit(platillo())"
+  (keydown.enter)="onClick.emit(platillo())"
+  (keydown.space)="onClick.emit(platillo())"
+  role="button"
+  tabindex="0"
+  [attr.aria-label]="'Agregar ' + platillo().nombre"
+>
+  <div class="d-flex gap-3 align-items-center">
+    <div
+      class="img-container rounded-3 bg-light overflow-hidden"
+      style="width: 70px; height: 70px;"
+    >
+      @if (platillo().imagenUrl) {
+        <img
+          [src]="platillo().imagenUrl"
+          class="w-100 h-100 object-fit-cover"
+          [alt]="platillo().nombre"
+        />
+      } @else {
+        <div
+          class="w-100 h-100 d-flex align-items-center justify-content-center text-muted opacity-50"
+        >
+          <i class="bi bi-image"></i>
+        </div>
+      }
+    </div>
+    <div class="flex-grow-1 overflow-hidden">
+      <h6 class="fw-bold mb-0 text-truncate text-dark">{{ platillo().nombre }}</h6>
+      <span class="text-primary fw-bold small">{{
+        platillo().precio | currency: 'USD'
+      }}</span>
+    </div>
+    <i class="bi bi-plus-circle-fill text-primary fs-4 opacity-75"></i>
+  </div>
+</div>
