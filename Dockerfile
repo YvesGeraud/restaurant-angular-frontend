@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 # Copiar configuración y dependencias primero para aprovechar el caché
 RUN npm install -g pnpm
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copiar el resto del código y compilar para producción
