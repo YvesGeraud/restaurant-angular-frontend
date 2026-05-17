@@ -1,4 +1,5 @@
-@if (!authStore.isInitialized()) {
+<!-- Global Loading Screen overlay (solo visible mientras se verifica la sesión en las rutas protegidas) -->
+@if (!authStore.isInitialized() && authStore.loading()) {
   <div
     class="app-container"
     style="
@@ -23,8 +24,6 @@
   </div>
 }
 
-@if (authStore.isInitialized()) {
-  <div class="app-root animate-fade-in">
-    <router-outlet></router-outlet>
-  </div>
-}
+<div class="app-root animate-fade-in">
+  <router-outlet></router-outlet>
+</div>
