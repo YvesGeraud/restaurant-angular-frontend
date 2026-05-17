@@ -8,6 +8,11 @@ export const authGuard: CanActivateFn = () => {
   const store = inject(AuthStore);
   const router = inject(Router);
 
+  // Iniciar la sesión si aún no se ha intentado
+  if (!store.isInitialized()) {
+    store.initSession();
+  }
+
   // Convertimos el signal a observable para manejar la espera de inicialización
   return toObservable(store.isInitialized).pipe(
     // Esperamos a que el Store haya terminado de intentar restaurar la sesión (/me)
@@ -28,6 +33,11 @@ export const authGuard: CanActivateFn = () => {
 export const guestGuard: CanActivateFn = () => {
   const store = inject(AuthStore);
   const router = inject(Router);
+
+  // Iniciar la sesión si aún no se ha intentado
+  if (!store.isInitialized()) {
+    store.initSession();
+  }
 
   // Convertimos el signal a observable para manejar la espera de inicialización
   return toObservable(store.isInitialized).pipe(

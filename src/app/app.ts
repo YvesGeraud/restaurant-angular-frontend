@@ -13,10 +13,7 @@ import { SocketService } from '@core/services/socket.service';
 export class App implements OnInit {
   protected readonly title = signal('Frontend');
   readonly authStore = inject(AuthStore);
-  private readonly socketService = inject(SocketService);
-
   ngOnInit(): void {
-    this.authStore.initSession();
-    this.socketService.conectar();
+    // Ya no inicializamos sesión ni sockets de forma global para ahorrar recursos en la web pública
   }
 }
