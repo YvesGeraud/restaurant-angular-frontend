@@ -3,12 +3,13 @@ FROM node:lts-alpine as build-step
 WORKDIR /usr/src/app
 
 # Copiar configuración y dependencias primero para aprovechar el caché
-COPY package*.json ./
-RUN npm ci
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # Copiar el resto del código y compilar para producción
 COPY . .
-RUN npm run build -- --configuration=production
+RUN pnpm run build -- --configuration=production
 
 # Etapa 2: Servidor Web (Nginx) para servir archivos estáticos
 FROM nginx:stable-alpine

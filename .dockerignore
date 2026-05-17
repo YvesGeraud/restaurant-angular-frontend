@@ -13,4 +13,3 @@ cypress.config.ts
 README.md
 README_TESTING.md
 Dockerfile
-nginx.conf
