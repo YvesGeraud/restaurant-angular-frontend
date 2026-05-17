@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+dist
+.angular
+.git
+.gitignore
+.editorconfig
+.prettierrc
+.prettierignore
+.vscode
+cypress
+cypress.config.ts
+README.md
+README_TESTING.md
+Dockerfile
+nginx.conf

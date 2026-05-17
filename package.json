@@ -27,7 +27,7 @@
     ]
   },
   "private": true,
-  "packageManager": "npm@10.9.7",
+  "packageManager": "pnpm@11.1.2",
   "dependencies": {
     "@angular/common": "^21.1.0",
     "@angular/compiler": "^21.1.0",

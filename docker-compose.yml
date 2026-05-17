@@ -1,0 +1,6 @@
+services:
+  app_frontend:
+    build: .
+    container_name: restaurante_frontend_solo
+    ports:
+      - "8080:80"
