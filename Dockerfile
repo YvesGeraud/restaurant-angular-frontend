@@ -9,7 +9,7 @@ RUN pnpm install --frozen-lockfile
 
 # Copiar el resto del código y compilar para producción
 COPY . .
-RUN pnpm run build -- --configuration=production
+RUN pnpm run build --configuration=production
 
 # Etapa 2: Servidor Web (Nginx) para servir archivos estáticos
 FROM nginx:stable-alpine
