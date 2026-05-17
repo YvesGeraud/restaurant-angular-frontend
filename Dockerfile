@@ -18,8 +18,8 @@ FROM nginx:stable-alpine
 # Ajustado a 'dist/Frontend/browser' basado en la estructura de Angular 18
 COPY --from=build-step /usr/src/app/dist/Frontend/browser /usr/share/nginx/html
 
-# Copiar configuración personalizada de Nginx para manejar el routing de Angular
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copiar configuración personalizada de Nginx como plantilla para soportar el puerto dinámico de Railway
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 # Informar que el puerto 80 estará expuesto
 EXPOSE 80
