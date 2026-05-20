@@ -1,8 +1,7 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthStore } from '@core/auth/auth.store';
-import { SocketService } from '@core/services/socket.service';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +9,7 @@ import { SocketService } from '@core/services/socket.service';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App implements OnInit {
+export class App {
   protected readonly title = signal('Frontend');
   readonly authStore = inject(AuthStore);
-  ngOnInit(): void {
-    // Ya no inicializamos sesión ni sockets de forma global para ahorrar recursos en la web pública
-  }
 }

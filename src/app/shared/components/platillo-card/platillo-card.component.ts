@@ -11,5 +11,5 @@ import { Platillo } from '../../../features/platillos/models/platillo.model';
 })
 export class PlatilloCardComponent {
   platillo = input.required<Platillo>();
-  onClick = output<Platillo>();
+  seleccionar = output<Platillo>();
 }

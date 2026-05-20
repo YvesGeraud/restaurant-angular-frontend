@@ -11,7 +11,7 @@ import { OrdenService } from '../../services/orden.service';
 import { NotificationService } from '@core/services/notification.service';
 
 // Models
-import { CrearOrdenFormData, ItemCarrito } from '../../models/orden.model';
+import { CrearOrdenFormData } from '../../models/orden.model';
 import { Platillo } from '../../../platillos/models/platillo.model';
 
 // Shared Components

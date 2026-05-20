@@ -15,7 +15,7 @@
             <h5 class="fw-bold mb-0 text-dark">Menú Disponible</h5>
             <app-search-box 
               placeholder="Buscar platillo..." 
-              (search)="onBuscar($event)"
+              (buscar)="onBuscar($event)"
             ></app-search-box>
           </div>
         </div>
@@ -26,7 +26,7 @@
               <div class="col p-2">
                 <app-platillo-card 
                   [platillo]="p" 
-                  (onClick)="agregarAlCarrito($event)"
+                  (seleccionar)="agregarAlCarrito($event)"
                 ></app-platillo-card>
               </div>
             } @empty {

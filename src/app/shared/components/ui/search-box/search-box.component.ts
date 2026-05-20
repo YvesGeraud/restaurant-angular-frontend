@@ -11,10 +11,10 @@ import { CommonModule } from '@angular/common';
 export class SearchBoxComponent {
   placeholder = input<string>('Buscar...');
   width = input<string>('250px');
-  search = output<string>();
+  buscar = output<string>();
 
   onInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    this.search.emit(value);
+    this.buscar.emit(value);
   }
 }
