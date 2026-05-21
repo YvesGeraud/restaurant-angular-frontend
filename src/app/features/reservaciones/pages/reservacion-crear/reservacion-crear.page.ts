@@ -214,7 +214,17 @@ export class ReservacionCrearPage {
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.mostrarError(err.error?.mensaje || 'Error al crear la reservación.');
+        const msg = err.error?.mensaje || 'Error al crear la reservación.';
+        let htmlMsg: string | undefined = undefined;
+
+        if (err.error?.errores && Array.isArray(err.error.errores) && err.error.errores.length > 0) {
+          const listItems = err.error.errores
+            .map((e: { mensaje: string }) => `<li>${e.mensaje}</li>`)
+            .join('');
+          htmlMsg = `<div class="text-start mt-2"><ul class="mb-0">${listItems}</ul></div>`;
+        }
+
+        this.mostrarError(msg, htmlMsg);
         console.error('Error al crear reservación:', err);
       },
     });
@@ -231,11 +241,12 @@ export class ReservacionCrearPage {
     this.router.navigate(['/']);
   }
 
-  private mostrarError(mensaje: string) {
+  private mostrarError(mensaje: string, htmlMessage?: string) {
     Swal.fire({
       icon: 'error',
       title: 'Oops...',
-      text: mensaje,
+      text: htmlMessage ? undefined : mensaje,
+      html: htmlMessage,
       confirmButtonColor: '#d4af37',
     });
   }

@@ -1,5 +1,12 @@
+export interface ClienteBase {
+  nombre: string;
+  correo: string;
+  telefono: string;
+}
+
 export interface ReservacionBase {
-  id_ct_cliente: number;
+  id_ct_cliente?: number;
+  cliente?: ClienteBase;
   id_ct_mesa: number;
   num_personas: number;
   fecha_reservacion: string; // ISO 8601
