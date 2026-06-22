@@ -28,6 +28,8 @@ export interface Orden {
   id_rl_orden: number;
   id_ct_mesa?: number;
   id_ct_usuario: number;
+  id_ct_usuario_reg?: number;
+  id_ct_usuario_mod?: number | null;
   total: number;
   estado: EstadoOrden;
   fecha_reg: string;
