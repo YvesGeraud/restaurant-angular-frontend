@@ -1,0 +1,78 @@
+fragment DetalleOrdenFragment on DetalleOrden {
+  id_dt_detalle_orden
+  cantidad
+  precio_unitario
+  subtotal
+  platillo {
+    id_ct_platillo
+    nombre
+    precio
+    imagen_url
+  }
+}
+
+fragment OrdenCompletaFragment on Orden {
+  id_rl_orden
+  estado
+  total
+  fecha_reg
+  fecha_mod
+  id_ct_usuario_reg
+  id_ct_usuario_mod
+  mesa {
+    id_ct_mesa
+    codigo
+    capacidad
+    status
+    estado
+  }
+  usuario {
+    id_ct_usuario
+    nombre_completo
+  }
+  detalles {
+    ...DetalleOrdenFragment
+  }
+}
+
+query GetOrdenes($filtros: FiltrosOrdenesInput) {
+  ordenes(filtros: $filtros) {
+    ...OrdenCompletaFragment
+  }
+}
+
+query GetOrden($id: Int!) {
+  orden(id: $id) {
+    ...OrdenCompletaFragment
+  }
+}
+
+mutation CrearOrden($input: CrearOrdenInput!) {
+  crearOrden(input: $input) {
+    ...OrdenCompletaFragment
+  }
+}
+
+mutation CambiarEstadoOrden($id: Int!, $input: ActualizarEstadoOrdenInput!) {
+  cambiarEstadoOrden(id: $id, input: $input) {
+    ...OrdenCompletaFragment
+  }
+}
+
+mutation CancelarOrden($id: Int!) {
+  cancelarOrden(id: $id) {
+    ...OrdenCompletaFragment
+  }
+}
+
+subscription OnOrdenNueva {
+  ordenNueva {
+    ...OrdenCompletaFragment
+  }
+}
+
+subscription OnOrdenActualizada {
+  ordenActualizada {
+    ...OrdenCompletaFragment
+  }
+}

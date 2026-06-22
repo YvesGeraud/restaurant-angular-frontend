@@ -23,8 +23,8 @@ Este es el cliente web frontend para el sistema de gestión del restaurante. Est
    - Dividido en capas lógicas: `Core` para lógica global y servicios, `Layouts` para plantillas de página, `Shared` para componentes comunes reutilizables y `Features` para módulos funcionales independientes.
 2. **Integración con Stripe Checkout**:
    - Uso de `@stripe/stripe-js` en el cliente para el procesamiento seguro de pagos en reservaciones, redirigiendo al flujo oficial de Stripe y recibiendo las redirecciones de éxito o cancelación.
-3. **Comunicación en Tiempo Real (WebSockets)**:
-   - Cliente integrado con `socket.io-client` para escuchar notificaciones instantáneas de nuevas comandas en el módulo de Cocina y actualizar dinámicamente el estado interactivo del Mapa de Mesas.
+3. **Comunicación en Tiempo Real (GraphQL Subscriptions)**:
+   - Suscripciones persistentes sobre WebSockets mediante **graphql-ws** y **Apollo Client** para notificar y recibir comandas en Cocina y actualizar dinámicamente el Mapa de Mesas.
 4. **Visualizaciones de Datos Dinámicas**:
    - Gráficas interactivas y responsivas usando `ng-apexcharts` para el panel de administración, reportando ventas, ocupaciones y platillos populares.
 5. **Alineación de Diseño y Micro-animaciones**:
@@ -41,7 +41,8 @@ Este es el cliente web frontend para el sistema de gestión del restaurante. Est
 - **Estilos**: [Bootstrap (v5.3.8)](https://getbootstrap.com/) & SASS (SCSS)
 - **Animaciones y Alertas**: [AnimeJS](https://animejs.com/) & [SweetAlert2](https://sweetalert2.github.io/)
 - **Gráficas**: [ApexCharts](https://apexcharts.com/) con [ng-apexcharts](https://github.com/apexcharts/ng-apexcharts)
-- **Tiempo Real**: [Socket.io Client (v4)](https://socket.io/docs/v4/client-api/)
+- **API Moderna & Tiempo Real**: [Apollo Angular (v14+)](https://apollo-angular.com/) con [graphql-ws](https://github.com/enisdenjo/graphql-ws) (WebSockets)
+- **Generación de Código**: [GraphQL Code Generator](https://the-guild.dev/graphql/codegen) (para tipado automático)
 - **Pasarela de Pagos**: [Stripe.js](https://stripe.com/docs/js)
 - **Pruebas Unitarias**: [Vitest](https://vitest.dev/)
 - **Pruebas E2E**: [Cypress](https://www.cypress.io/)
@@ -132,6 +133,14 @@ Configura los valores del backend y Stripe en los archivos ubicados en `src/envi
 ---
 
 ## 🏃 Ejecución de la Aplicación
+
+### Generar Tipos de GraphQL (Codegen)
+El proyecto utiliza **GraphQL Code Generator** para generar servicios Angular y tipos fuertemente tipados a partir del esquema de base de datos/GraphQL del backend. Ejecuta el codegen con:
+
+```bash
+pnpm run codegen
+```
+Este comando analizará tus archivos `.graphql` bajo `src/graphql/` y creará los archivos autogenerados de tipos y operaciones (como `src/graphql/ordenes.generated.ts`), sincronizándolos automáticamente con el backend.
 
 ### Servidor de Desarrollo
 Inicia un servidor de desarrollo local:
