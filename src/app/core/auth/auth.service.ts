@@ -61,4 +61,24 @@ export class AuthService {
   refreshToken(): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/refresh`, {}, this.options);
   }
+
+  solicitarRecuperacion(email: string): Observable<{ exito: boolean; mensaje: string }> {
+    return this.http.post<{ exito: boolean; mensaje: string }>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetearContrasena(token: string, contrasena_nueva: string, confirmar_contrasena: string): Observable<{ exito: boolean; mensaje: string }> {
+    return this.http.post<{ exito: boolean; mensaje: string }>(`${this.apiUrl}/reset-password`, {
+      token,
+      contrasena_nueva,
+      confirmar_contrasena,
+    });
+  }
+
+  cambiarContrasena(contrasena_actual: string, contrasena_nueva: string, confirmar_contrasena: string): Observable<{ exito: boolean; mensaje: string }> {
+    return this.http.post<{ exito: boolean; mensaje: string }>(`${this.apiUrl}/change-password`, {
+      contrasena_actual,
+      contrasena_nueva,
+      confirmar_contrasena,
+    }, this.options);
+  }
 }

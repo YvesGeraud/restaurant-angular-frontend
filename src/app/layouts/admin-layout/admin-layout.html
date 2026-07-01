@@ -2,13 +2,45 @@
   <!-- Top Navbar -->
   <app-navbar></app-navbar>
 
+  <!-- Barra móvil con hamburguesa (solo visible en pantallas < md) -->
+  <div class="mobile-topbar d-flex d-md-none align-items-center px-3 py-2 bg-white border-bottom shadow-sm">
+    <button
+      class="btn btn-link text-dark p-0 me-3"
+      type="button"
+      (click)="toggleSidebar()"
+      aria-label="Abrir menú de navegación"
+    >
+      <i class="bi bi-list fs-3"></i>
+    </button>
+    <span class="fw-semibold text-truncate">Panel Administrativo</span>
+  </div>
+
+  <!-- Backdrop para cerrar el sidebar al tocar fuera (solo móvil) -->
+  @if (sidebarAbierto()) {
+    <div
+      class="sidebar-backdrop d-md-none"
+      role="presentation"
+      (click)="cerrarSidebar()"
+    ></div>
+  }
+
   <div class="d-flex flex-grow-1">
     <!-- Sidebar -->
     <aside
-      class="sidebar bg-white border-end shadow-sm d-none d-md-flex flex-column"
-      style="width: 250px; min-height: calc(100vh - 76px)"
+      class="sidebar bg-white border-end shadow-sm flex-column"
+      [class.sidebar--abierto]="sidebarAbierto()"
     >
       <div class="p-3">
+        <!-- Botón de cierre visible solo en móvil -->
+        <button
+          class="btn btn-link text-muted d-flex d-md-none ms-auto mb-2 p-0"
+          type="button"
+          (click)="cerrarSidebar()"
+          aria-label="Cerrar menú"
+        >
+          <i class="bi bi-x-lg fs-5"></i>
+        </button>
+
         <span class="text-uppercase text-muted fw-bold small tracking-wider mb-2 d-block px-3"
           >Gestión</span
         >
@@ -18,6 +50,7 @@
               class="nav-link text-dark py-2 px-3 d-flex align-items-center"
               routerLink="/admin/dashboard"
               routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
             >
               <i class="bi bi-speedometer2 me-3 fs-5"></i>
               <span>Dashboard</span>
@@ -28,6 +61,7 @@
               class="nav-link text-dark py-2 px-3 d-flex align-items-center"
               routerLink="/admin/usuarios"
               routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
             >
               <i class="bi bi-people me-3 fs-5"></i>
               <span>Personal</span>
@@ -38,6 +72,7 @@
               class="nav-link text-dark py-2 px-3 d-flex align-items-center"
               routerLink="/admin/platillos"
               routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
             >
               <i class="bi bi-egg-fried me-3 fs-5"></i>
               <span>Platillos</span>
@@ -48,6 +83,7 @@
               class="nav-link text-dark py-2 px-3 d-flex align-items-center"
               routerLink="/admin/mesas"
               routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
             >
               <i class="bi bi-grid-3x3-gap me-3 fs-5"></i>
               <span>Mesas</span>
@@ -58,6 +94,7 @@
               class="nav-link text-dark py-2 px-3 d-flex align-items-center"
               routerLink="/admin/reservaciones"
               routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
             >
               <i class="bi bi-calendar-check me-3 fs-5"></i>
               <span>Reservaciones</span>
@@ -68,6 +105,7 @@
               class="nav-link text-dark py-2 px-3 d-flex align-items-center"
               routerLink="/admin/ordenes"
               routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
             >
               <i class="bi bi-receipt me-3 fs-5"></i>
               <span>Órdenes</span>
@@ -78,6 +116,7 @@
               class="nav-link text-dark py-2 px-3 d-flex align-items-center"
               routerLink="/admin/cocina"
               routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
             >
               <i class="bi bi-fire me-3 fs-5"></i>
               <span>Cocina</span>
@@ -88,9 +127,43 @@
               class="nav-link text-dark py-2 px-3 d-flex align-items-center"
               routerLink="/admin/reportes"
               routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
             >
               <i class="bi bi-graph-up me-3 fs-5"></i>
               <span>Reportes</span>
+            </a>
+          </li>
+          <li class="nav-item" *appHasPermission="'CLIENTES_VER'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/clientes"
+              routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
+            >
+              <i class="bi bi-person-lines-fill me-3 fs-5"></i>
+              <span>Clientes</span>
+            </a>
+          </li>
+          <li class="nav-item" *appHasPermission="'CONFIG_VER'">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/configuracion"
+              routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
+            >
+              <i class="bi bi-gear me-3 fs-5"></i>
+              <span>Configuración</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-dark py-2 px-3 d-flex align-items-center"
+              routerLink="/admin/change-password"
+              routerLinkActive="active bg-primary text-white"
+              (click)="cerrarSidebar()"
+            >
+              <i class="bi bi-shield-lock me-3 fs-5"></i>
+              <span>Cambiar contraseña</span>
             </a>
           </li>
         </ul>

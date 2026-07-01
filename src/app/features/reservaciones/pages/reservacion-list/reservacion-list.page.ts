@@ -220,8 +220,13 @@ export class ReservacionListPage implements OnInit {
   }
 
   confirmarAsistencia(res: Reservacion) {
-    this.notifications.success(`Cliente de la mesa #${res.id_ct_mesa} marcado como presente.`);
-    // TODO: Implementar llamada al API para cambiar estado a "Completada/Presente"
+    this.reservacionService.actualizar(res.id_rl_reservacion, { estado: 'COMPLETADA' }).subscribe({
+      next: () => {
+        this.notifications.success(`Asistencia confirmada para mesa #${res.id_ct_mesa}`);
+        this.cargarReservaciones();
+      },
+      error: () => this.notifications.error('Error al confirmar la asistencia'),
+    });
   }
 
   marcarNoShow(res: Reservacion) {
@@ -233,7 +238,13 @@ export class ReservacionListPage implements OnInit {
       )
       .subscribe((confirmado) => {
         if (confirmado) {
-          this.notifications.info('Estado actualizado.');
+          this.reservacionService.actualizar(res.id_rl_reservacion, { estado: 'NO_SHOW' }).subscribe({
+            next: () => {
+              this.notifications.info('Estado actualizado a "No se presentó"');
+              this.cargarReservaciones();
+            },
+            error: () => this.notifications.error('Error al actualizar el estado'),
+          });
         }
       });
   }

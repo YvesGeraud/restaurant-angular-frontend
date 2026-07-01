@@ -38,6 +38,13 @@ export class ReservacionService {
   }
 
   /**
+   * Actualiza el estado u otros campos de una reservación
+   */
+  actualizar(id: number, datos: { estado?: string; [key: string]: unknown }): Observable<{ exito: boolean }> {
+    return this.http.patch<{ exito: boolean }>(`${this.apiUrl}/${id}`, datos);
+  }
+
+  /**
    * Cancela una reservación (elimina lógicamente en el backend)
    */
   eliminar(id: number): Observable<{ exito: boolean }> {

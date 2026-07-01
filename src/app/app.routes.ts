@@ -45,6 +45,32 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'forgot-password',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/auth/presentation/pages/forgot-password/forgot-password.page').then(
+            (m) => m.ForgotPasswordPage,
+          ),
+      },
+    ],
+  },
+  {
+    path: 'reset-password',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/auth/presentation/pages/reset-password/reset-password.page').then(
+            (m) => m.ResetPasswordPage,
+          ),
+      },
+    ],
+  },
 
   // --- ADMIN ROUTES ---
   {
@@ -96,6 +122,25 @@ export const routes: Routes = [
         path: 'reportes',
         loadChildren: () =>
           import('./features/reportes/reportes.routes').then((m) => m.REPORTES_ROUTES),
+      },
+      {
+        path: 'clientes',
+        loadChildren: () =>
+          import('./features/clientes/clientes.routes').then((m) => m.CLIENTES_ROUTES),
+      },
+      {
+        path: 'configuracion',
+        loadChildren: () =>
+          import('./features/configuracion/configuracion.routes').then(
+            (m) => m.CONFIGURACION_ROUTES,
+          ),
+      },
+      {
+        path: 'change-password',
+        loadComponent: () =>
+          import(
+            './features/auth/presentation/pages/change-password/change-password.page'
+          ).then((m) => m.ChangePasswordPage),
       },
     ],
   },

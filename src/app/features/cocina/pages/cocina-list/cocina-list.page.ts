@@ -1,6 +1,8 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription, merge } from 'rxjs';
 import { OrdenesStore } from '../../../ordenes/store/ordenes.store';
+import { OrdenSubscriptionService } from '../../services/orden-subscription.service';
 import { EstadoOrden, Orden } from '../../../ordenes/models/orden.model';
 
 @Component({
@@ -12,7 +14,18 @@ import { EstadoOrden, Orden } from '../../../ordenes/models/orden.model';
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 class="fw-bold mb-0 text-dark">Monitor de Cocina (KDS)</h2>
-          <p class="text-muted">Control de órdenes activas para preparación inmediata</p>
+          <p class="text-muted">
+            Control de órdenes activas para preparación inmediata
+            @if (wsConectado()) {
+              <span class="badge bg-success-subtle text-success border border-success-subtle ms-2 rounded-pill px-2 py-1 small">
+                <i class="bi bi-wifi me-1"></i>En vivo
+              </span>
+            } @else {
+              <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-2 rounded-pill px-2 py-1 small">
+                <i class="bi bi-wifi-off me-1"></i>Reconectando...
+              </span>
+            }
+          </p>
         </div>
         <div class="d-flex gap-3">
           <div
@@ -145,73 +158,97 @@ import { EstadoOrden, Orden } from '../../../ordenes/models/orden.model';
         transform: translateY(-5px);
         shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
       }
-      .bg-warning-subtle {
-        background-color: #fff3cd;
-      }
-      .bg-primary-subtle {
-        background-color: #cfe2ff;
-      }
-      .bg-success-subtle {
-        background-color: #d1e7dd;
-      }
-      .text-light-gray {
-        color: #dee2e6;
-      }
-      .animate-fade-in {
-        animation: fadeIn 0.5s ease-out;
-      }
-      .animate-pulse {
-        animation: pulse 2s infinite;
-      }
+      .bg-warning-subtle { background-color: #fff3cd; }
+      .bg-primary-subtle { background-color: #cfe2ff; }
+      .bg-success-subtle { background-color: #d1e7dd; }
+      .text-light-gray { color: #dee2e6; }
+      .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+      .animate-pulse { animation: pulse 2s infinite; }
       @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
       }
       @keyframes pulse {
-        0% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.7;
-        }
-        100% {
-          opacity: 1;
-        }
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
       }
     `,
   ],
 })
-export class CocinaListPage implements OnInit {
+export class CocinaListPage implements OnInit, OnDestroy {
   private readonly store = inject(OrdenesStore);
+  private readonly subscriptionService = inject(OrdenSubscriptionService);
+  private sub?: Subscription;
 
-  // Filtramos solo lo que le interesa a cocina
+  wsConectado = signal(false);
+
+  // Señal local de órdenes para la cocina — se actualiza vía GQL subscriptions
+  private readonly ordenesKds = signal<Orden[]>([]);
+
   readonly ordenesActivas = computed(() =>
-    this.store
-      .ordenes()
-      .filter((o: Orden) => ['PENDIENTE', 'EN_PROCESO', 'LISTO'].includes(o.estado)),
+    this.ordenesKds().filter((o) => ['PENDIENTE', 'EN_PROCESO', 'LISTO'].includes(o.estado)),
   );
 
   readonly pendientes = computed(() =>
-    this.ordenesActivas().filter((o: Orden) => o.estado === 'PENDIENTE'),
+    this.ordenesActivas().filter((o) => o.estado === 'PENDIENTE'),
   );
 
   readonly enProceso = computed(() =>
-    this.ordenesActivas().filter((o: Orden) => o.estado === 'EN_PROCESO'),
+    this.ordenesActivas().filter((o) => o.estado === 'EN_PROCESO'),
   );
 
   ngOnInit() {
-    // Aseguramos que las órdenes estén cargadas
+    // Carga inicial desde REST para tener el snapshot actual
     this.store.setFiltros({ limite: 50, estado: undefined });
     this.store.loadOrdenes();
+
+    // Sincronizar el snapshot inicial del store como punto de partida
+    const snapshot = this.store
+      .ordenes()
+      .filter((o: Orden) => ['PENDIENTE', 'EN_PROCESO', 'LISTO'].includes(o.estado));
+    this.ordenesKds.set(snapshot);
+
+    // Suscribirse a ambos canales GraphQL y fusionarlos
+    this.sub = merge(
+      this.subscriptionService.ordenNueva$(),
+      this.subscriptionService.ordenActualizada$(),
+    ).subscribe({
+      next: (orden) => {
+        this.wsConectado.set(true);
+        this.aplicarActualizacion(orden);
+      },
+      error: () => this.wsConectado.set(false),
+    });
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
   }
 
   cambiarEstado(id: number, nuevoEstado: string) {
     this.store.cambiarEstado(id, nuevoEstado as EstadoOrden);
+  }
+
+  private aplicarActualizacion(orden: Orden) {
+    const estados = ['PENDIENTE', 'EN_PROCESO', 'LISTO'];
+    const activas = this.ordenesKds();
+
+    if (!estados.includes(orden.estado)) {
+      // La orden salió del flujo de cocina (ENTREGADO, PAGADA, CANCELADO)
+      this.ordenesKds.set(activas.filter((o) => o.id_rl_orden !== orden.id_rl_orden));
+      return;
+    }
+
+    const idx = activas.findIndex((o) => o.id_rl_orden === orden.id_rl_orden);
+    if (idx >= 0) {
+      // Actualizar en lugar
+      const actualizado = [...activas];
+      actualizado[idx] = orden;
+      this.ordenesKds.set(actualizado);
+    } else {
+      // Orden nueva — agregar al principio
+      this.ordenesKds.set([orden, ...activas]);
+    }
   }
 }
